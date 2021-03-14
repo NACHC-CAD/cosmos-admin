@@ -5,7 +5,7 @@
 			<p>
 				<b>Upload Files (as a single zip)</b>
 			</p>
-			<form action="${home}/UploadFiles" method="post">
+			<form action="${home}/Upload" method="post" enctype="multipart/form-data">
 				<table border="0">
 					<tr>
 						<td>
