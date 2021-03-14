@@ -1,5 +1,15 @@
 <%@ include file="/WEB-INF/jsp/headerfooter/header/componentHeader.jsp"%>
 <html>
+	<head>
+		<script>
+			postUploadFile = function() {
+				// YES.post("uploadFilesForm", "status", "${home}/Upload");
+				alert("DOING GET");
+				$("#status").val("");
+				YES.getAndShowStatus("status", "${home}/Upload");
+			}
+		</script>
+	</head>
 	<body>
 		<div align="center">
 			<p>
@@ -16,7 +26,17 @@
 							</tr>
 							<tr>
 								<td>
-									<button width="100%" style="width:100%">Submit</button>
+									  
+									<button style="width:100%">Submit Form</button>
+									
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<br/>
+									<div id="foo"></div>
+									Status:
+									<textarea id="status" name="status" style="height: 200px;width: 100%">Select file and press submit...</textarea>
 								</td>
 							</tr>
 						</table>
@@ -26,4 +46,7 @@
 			<br/><br/><br/><br/>
 		</div>
 	</body>
+	<!--  
+									<button style="width:100%" onclick="javascript:postUploadFile()">Submit</button>
+	-->
 </html>

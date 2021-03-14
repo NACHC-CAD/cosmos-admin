@@ -221,11 +221,13 @@ YES.showErrorMessage = function() {
 	YES.unblock();
 };
 
+/*
 YES.get = function(divId, url, successFunction) {
 	YES.block();
 	jQuery.get(url, 
 		function(data) {
 			jQuery("#" + divId).html(data);
+			alert(data);
 			if(successFunction != undefined) {
 				successFunction();
 			}
@@ -233,9 +235,54 @@ YES.get = function(divId, url, successFunction) {
 		}
 	).error(YES.ajaxError);
 };
+*/
 
-		$( function() {
-		  $( "#jquery-tabs" ).tabs();
-		} );
+/*
+YES.getAndShowStatus = function(listenerId, url, successFunction) {
+	jQuery.get(url, 
+		function(data) {
+			val = jQuery("#" + listenerId).val();
+			jQuery("#" + listenerId).val(val + data);
+		}
+	);
+};
+*/
+
+YES.getAndShowStatus = function(listenerId, url, successFunction) {
+	alert("ajax");
+	jQuery.ajax(url).done( 
+		function(data) {
+			val = jQuery("#" + listenerId).val();
+			jQuery("#" + listenerId).val(val + data);
+		}
+	);
+	alert("end ajax");
+};
+
+
+/*
+YES.post = function(formId, divId, url) {
+	locator = "#" + formId;
+	alert(locator);
+	jQuery.post(url, $(locator).serialize()).done(
+		function(data) {
+			divLocator = "#" + divId;
+			$(divLocator).append(data);
+		}
+	);
+	alert("done");
+}
+*/
+
+YES.post = function(formId, divId, url) {
+	$("#" + formId).submit();
+	alert("done with YES.post");
+}
+
+$( function() {
+  $( "#jquery-tabs" ).tabs();
+} );
+
+
 
 

@@ -3,9 +3,10 @@ package org.nachc.cosmos.web.action.logon;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
+import java.io.OutputStream;
 
 import javax.annotation.Resource;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -22,7 +23,6 @@ import org.yaorma.util.time.TimeUtil;
 
 import com.nach.core.util.file.FileUtil;
 import com.nach.core.util.file.ZipUtil;
-import com.nach.core.util.string.StringUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +45,16 @@ public class UploadAction extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.info("----------");
 		log.info("Doing post");
-		writeZipFileToDisc(req, resp);
+//		writeZipFileToDisc(req, resp);
+		resp.setContentType("application/json");
+		OutputStream out = resp.getOutputStream();
+		out.write("FOOBAR 1\n".getBytes(), 0, 9);
+		out.flush();
+		out.write("FOOBAR 2\n".getBytes(), 0, 9);
+		out.flush();
+		out.write("FOOBAR 3\n".getBytes(), 0, 9);
+		out.flush();
+
 		log.info("Done.");
 	}
 
