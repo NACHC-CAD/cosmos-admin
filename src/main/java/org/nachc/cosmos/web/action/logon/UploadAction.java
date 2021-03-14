@@ -14,7 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
+import org.nachc.cad.cosmos.util.mysql.params.MySqlParams;
+import org.yaorma.util.time.TimeUtil;
+
 import com.nach.core.util.file.FileUtil;
+import com.nach.core.util.string.StringUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +37,7 @@ public class UploadAction extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		log.info("----------");
 		log.info("Doing post");
 		writeZipFileToDisc(req, resp);
 		log.info("Done.");
@@ -43,11 +49,33 @@ public class UploadAction extends HttpServlet {
 		InputStream in = filePart.getInputStream();
 		String fileName = filePart.getSubmittedFileName();
 		log.info("Got file: " + fileName);
-		File file = new File("C:\\_WORKSPACES\\_COSMOS_SERVER\\_UPLOAD\\" + fileName);
+		File uploadDir = getUploadFileDir(fileName);
+		File file = new File(uploadDir, fileName);
 		log.info("Wrting file");
 		FileUtil.write(in, file);
 		log.info("Done writing file");
 	}
 	
+	private File getUploadFileDir(String fileName) {
+		String serverFilesRoot = MySqlParams.getServerFileRoot();
+		File rtn = null;
+		int cnt = -1;
+		boolean fileExists = true;
+		while(fileExists == true) {
+			cnt++;
+			String cntString = StringUtils.leftPad(cnt + "", 3, "0");
+			String dirName = "";
+			dirName += serverFilesRoot + "\\";
+			dirName += FileUtil.getPrefix(fileName);
+			dirName += TimeUtil.getDateAsYyyyMmDd(TimeUtil.getNow(), '-');
+			dirName = dirName + "_" + cntString;
+			rtn = new File(dirName);
+			fileExists = rtn.exists();
+		}
+		boolean success = rtn.mkdirs();
+		log.info("Upload dir: " + FileUtil.getCanonicalPath(rtn));
+		log.info("Dir created: " + success);
+		return rtn;
+	}
 	
 }
