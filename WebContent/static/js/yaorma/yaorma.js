@@ -248,16 +248,49 @@ YES.getAndShowStatus = function(listenerId, url, successFunction) {
 };
 */
 
+
+
 YES.getAndShowStatus = function(listenerId, url, successFunction) {
-	alert("ajax");
-	jQuery.ajax(url).done( 
-		function(data) {
-			val = jQuery("#" + listenerId).val();
-			jQuery("#" + listenerId).val(val + data);
-		}
-	);
-	alert("end ajax");
+	// based on https://gist.github.com/sohelrana820/63f029d3aa12936afbc50eb785c496c0
+	var form = $("#uploadForm")[0];
+	var data = new FormData(form);
+	$.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: url,
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
+        xhrFields: {
+            // Getting on progress streaming response
+            onprogress: function(e)
+            {
+                var progressResponse;
+                var response = e.currentTarget.response;
+				val = jQuery("#" + listenerId).val();
+				jQuery("#" + listenerId).val(response);
+
+            }
+        }
+    });
+
 };
+
+
+
+
+/*
+YES.getAndShowStatus = function(listenerId, url, successFunction) {
+    jQuery.get(url, 
+        function(data) {
+			alert(data);
+            val = jQuery("#" + listenerId).val();
+            jQuery("#" + listenerId).val(val + data);
+        }
+    );
+};
+*/
 
 
 /*
@@ -272,12 +305,12 @@ YES.post = function(formId, divId, url) {
 	);
 	alert("done");
 }
-*/
 
 YES.post = function(formId, divId, url) {
 	$("#" + formId).submit();
 	alert("done with YES.post");
 }
+*/
 
 $( function() {
   $( "#jquery-tabs" ).tabs();

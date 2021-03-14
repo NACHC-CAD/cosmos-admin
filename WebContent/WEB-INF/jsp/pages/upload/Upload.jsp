@@ -3,10 +3,8 @@
 	<head>
 		<script>
 			postUploadFile = function() {
-				// YES.post("uploadFilesForm", "status", "${home}/Upload");
-				alert("DOING GET");
-				$("#status").val("");
-				YES.getAndShowStatus("status", "${home}/Upload");
+			    $("#status").val("");
+			    YES.getAndShowStatus("status", "${home}/Upload");
 			}
 		</script>
 	</head>
@@ -15,7 +13,7 @@
 			<p>
 				<b>Upload Files (as a single zip)</b>
 			</p>
-			<form action="${home}/Upload" method="post" enctype="multipart/form-data">
+			<form name="uploadForm" id="uploadForm" action="${home}/Upload" method="post" enctype="multipart/form-data">
 				<table border="1">
 					<tr><td>
 						<table border="0">
@@ -26,9 +24,7 @@
 							</tr>
 							<tr>
 								<td>
-									  
 									<button style="width:100%">Submit Form</button>
-									
 								</td>
 							</tr>
 							<tr>
@@ -46,7 +42,7 @@
 			<br/><br/><br/><br/>
 		</div>
 	</body>
-	<!--  
+	
 									<button style="width:100%" onclick="javascript:postUploadFile()">Submit</button>
-	-->
+	
 </html>

@@ -45,16 +45,13 @@ public class UploadAction extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.info("----------");
 		log.info("Doing post");
-//		writeZipFileToDisc(req, resp);
-		resp.setContentType("application/json");
+		resp.setContentType("application/text");
 		OutputStream out = resp.getOutputStream();
-		out.write("FOOBAR 1\n".getBytes(), 0, 9);
+		out.write("Writing file to COSMOS!".getBytes());
 		out.flush();
-		out.write("FOOBAR 2\n".getBytes(), 0, 9);
+		writeZipFileToDisc(req, resp);
+		out.write("\n\nDone.\n".getBytes());
 		out.flush();
-		out.write("FOOBAR 3\n".getBytes(), 0, 9);
-		out.flush();
-
 		log.info("Done.");
 	}
 
@@ -69,6 +66,7 @@ public class UploadAction extends HttpServlet {
 			log.info("Got file: " + fileName);
 			File uploadDir = getUploadFileDir(fileName);
 			File file = new File(uploadDir, fileName);
+			/*
 			log.info("Wrting file");
 			FileUtil.write(in, file);
 			log.info("Done writing file");
@@ -79,6 +77,7 @@ public class UploadAction extends HttpServlet {
 			log.info("Source Dir: " + FileUtil.getCanonicalPath(srcDir));
 			UploadDir.uploadDir(srcDir, "greshje", conns);
 			conns.commit();
+			*/
 		} finally {
 			conns.close();
 		}
