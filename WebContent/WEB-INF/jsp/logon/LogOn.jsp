@@ -25,7 +25,7 @@
 										Name:
 									</td>
 									<td>
-										<input type="text" id="uid" name="uid"/>
+										<input type="text" id="uid" name="uid" value="${uid}"/>
 									</td>
 								</tr>
 								<tr>
@@ -33,7 +33,7 @@
 										Password:
 									</td>
 									<td>
-										<input type="password" id="pwd" name="pwd"/>
+										<input type="password" id="pwd" name="pwd" value="${pwd}"/>
 									</td>
 								</tr>
 								<tr>

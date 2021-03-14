@@ -1,6 +1,7 @@
 package org.nachc.cosmos.web.action.logon;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 import javax.annotation.Resource;
 import javax.servlet.RequestDispatcher;
@@ -9,6 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+
+import org.nachc.cad.cosmos.dvo.mysql.cosmos.PersonDvo;
+import org.nachc.cad.cosmos.util.mysql.params.MySqlParams;
+import org.yaorma.dao.Dao;
+import org.yaorma.database.Database;
+
+import com.nach.core.util.web.security.PasswordUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +33,8 @@ public class LogonAction extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		log.info("Doing logon...");
+		log.info("--------------------");
+		log.info("NEW LOGON...");
 		String uid = req.getParameter("uid");
 		String pwd = req.getParameter("pwd");
 		String attempt = req.getParameter("attempt");
@@ -42,7 +51,7 @@ public class LogonAction extends HttpServlet {
 
 	private void doLogOn(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.info("DOING LOG ON");
-		boolean isValidLogOn = false;
+		boolean isValidLogOn = authenticate(req, resp);
 		if(isValidLogOn) {
 			RequestDispatcher disp = req.getRequestDispatcher("/WEB-INF/jsp/pages/home/Home.jsp");
 			disp.forward(req, resp);
@@ -53,4 +62,33 @@ public class LogonAction extends HttpServlet {
 		}
 	}
 
+	private boolean authenticate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		log.info("Getting connection");
+		Connection conn = Database.getConnection(ds);
+		try {
+			String uid = req.getParameter("uid");
+			String pwd = req.getParameter("pwd");
+			String key = MySqlParams.getKey();
+			String attempt = req.getParameter("attempt");
+			req.setAttribute("uid", uid);
+			req.setAttribute("pwd", pwd);
+			req.setAttribute("attempt", attempt);
+			log.info("looking for: " + uid);
+			PersonDvo dvo = Dao.find(new PersonDvo(), "username", uid, conn);
+			if(dvo == null) {
+				log.info("Did not find: " + uid);
+				return false;
+			}
+			log.info("Authenticating password for: " + uid);
+			String salt = dvo.getSalt();
+			PasswordUtil util = new PasswordUtil(salt,key);
+			String expected = dvo.getPassword();
+			boolean rtn = util.authenticate(pwd, expected);
+			log.info("Authenicated ("+uid+"): " + rtn);
+			return rtn;
+		} finally {
+			Database.close(conn);
+		}
+	}
+	
 }
