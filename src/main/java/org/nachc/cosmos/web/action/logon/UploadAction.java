@@ -15,10 +15,13 @@ import javax.servlet.http.Part;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.nachc.cad.cosmos.util.connection.CosmosConnections;
 import org.nachc.cad.cosmos.util.mysql.params.MySqlParams;
+import org.nachc.cad.cosmos.util.project.UploadDir;
 import org.yaorma.util.time.TimeUtil;
 
 import com.nach.core.util.file.FileUtil;
+import com.nach.core.util.file.ZipUtil;
 import com.nach.core.util.string.StringUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +31,10 @@ import lombok.extern.slf4j.Slf4j;
 public class UploadAction extends HttpServlet {
 
 	@Resource(lookup = "java:/MySqlDS")
-	private DataSource ds;
+	private DataSource mysqlDs;
+
+	@Resource(lookup = "java:/DatabricksDS")
+	private DataSource databricksDs;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,16 +50,29 @@ public class UploadAction extends HttpServlet {
 	}
 
 	private void writeZipFileToDisc(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		log.info("Getting file");
-		Part filePart = req.getPart("file");
-		InputStream in = filePart.getInputStream();
-		String fileName = filePart.getSubmittedFileName();
-		log.info("Got file: " + fileName);
-		File uploadDir = getUploadFileDir(fileName);
-		File file = new File(uploadDir, fileName);
-		log.info("Wrting file");
-		FileUtil.write(in, file);
-		log.info("Done writing file");
+		log.info("Getting connection");
+		CosmosConnections conns = new CosmosConnections(mysqlDs, databricksDs);
+		try {
+			log.info("Getting file");
+			Part filePart = req.getPart("file");
+			InputStream in = filePart.getInputStream();
+			String fileName = filePart.getSubmittedFileName();
+			log.info("Got file: " + fileName);
+			File uploadDir = getUploadFileDir(fileName);
+			File file = new File(uploadDir, fileName);
+			log.info("Wrting file");
+			FileUtil.write(in, file);
+			log.info("Done writing file");
+			log.info("Zipfile size on disc: " + file.length());
+			log.info("Unzipping");
+			File srcDir = ZipUtil.unzip(file, file.getParentFile());
+			log.info("Done unzipping");
+			log.info("Source Dir: " + FileUtil.getCanonicalPath(srcDir));
+			UploadDir.uploadDir(srcDir, "greshje", conns);
+			conns.commit();
+		} finally {
+			conns.close();
+		}
 	}
 	
 	private File getUploadFileDir(String fileName) {
