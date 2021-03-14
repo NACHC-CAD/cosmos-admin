@@ -21,6 +21,15 @@
 		<url-pattern>/LogOn</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>ProjectOverview</servlet-name>
+		<servlet-class>org.nachc.cosmos.web.action.logon.ProjectOverviewAction</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ProjectOverview</servlet-name>
+		<url-pattern>/ProjectOverview</url-pattern>
+	</servlet-mapping>
+
 	<!-- 
 	* 
 	* welcome file list

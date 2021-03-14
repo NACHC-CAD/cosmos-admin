@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/headerfooter/header/componentHeader.jsp"%>
 
 <div>
-	<h2>Welcome to the NACHC Cosmos Browser</h2>
+	<h2>Welcome to NACHC Cosmos</h2>
 	<table class="yaormaBigBox collapsible fullWidth" style="table-layout:fixed;width:100%">
 		<tr>
 			<td>Goals and Overview</td>
