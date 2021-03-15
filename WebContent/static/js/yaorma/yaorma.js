@@ -221,38 +221,9 @@ YES.showErrorMessage = function() {
 	YES.unblock();
 };
 
-/*
-YES.get = function(divId, url, successFunction) {
-	YES.block();
-	jQuery.get(url, 
-		function(data) {
-			jQuery("#" + divId).html(data);
-			alert(data);
-			if(successFunction != undefined) {
-				successFunction();
-			}
-			YES.unblock();
-		}
-	).error(YES.ajaxError);
-};
-*/
-
-/*
-YES.getAndShowStatus = function(listenerId, url, successFunction) {
-	jQuery.get(url, 
-		function(data) {
-			val = jQuery("#" + listenerId).val();
-			jQuery("#" + listenerId).val(val + data);
-		}
-	);
-};
-*/
-
-
-
-YES.getAndShowStatus = function(listenerId, url, successFunction) {
+YES.getAndShowStatus = function(formId, listenerId, url) {
 	// based on https://gist.github.com/sohelrana820/63f029d3aa12936afbc50eb785c496c0
-	var form = $("#uploadForm")[0];
+	var form = $("#" + formId)[0];
 	var data = new FormData(form);
 	$.ajax({
         type: "POST",
@@ -264,53 +235,15 @@ YES.getAndShowStatus = function(listenerId, url, successFunction) {
         cache: false,
         xhrFields: {
             // Getting on progress streaming response
-            onprogress: function(e)
-            {
+            onprogress: function(e) {
                 var progressResponse;
                 var response = e.currentTarget.response;
-				val = jQuery("#" + listenerId).val();
 				jQuery("#" + listenerId).val(response);
-
             }
         }
     });
 
 };
-
-
-
-
-/*
-YES.getAndShowStatus = function(listenerId, url, successFunction) {
-    jQuery.get(url, 
-        function(data) {
-			alert(data);
-            val = jQuery("#" + listenerId).val();
-            jQuery("#" + listenerId).val(val + data);
-        }
-    );
-};
-*/
-
-
-/*
-YES.post = function(formId, divId, url) {
-	locator = "#" + formId;
-	alert(locator);
-	jQuery.post(url, $(locator).serialize()).done(
-		function(data) {
-			divLocator = "#" + divId;
-			$(divLocator).append(data);
-		}
-	);
-	alert("done");
-}
-
-YES.post = function(formId, divId, url) {
-	$("#" + formId).submit();
-	alert("done with YES.post");
-}
-*/
 
 $( function() {
   $( "#jquery-tabs" ).tabs();

@@ -19,10 +19,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.nachc.cad.cosmos.util.connection.CosmosConnections;
 import org.nachc.cad.cosmos.util.mysql.params.MySqlParams;
 import org.nachc.cad.cosmos.util.project.UploadDir;
+import org.nachc.cosmos.web.util.listener.OutputStreamListener;
 import org.yaorma.util.time.TimeUtil;
 
 import com.nach.core.util.file.FileUtil;
 import com.nach.core.util.file.ZipUtil;
+import com.nach.core.util.web.listener.Listener;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,47 +45,52 @@ public class UploadAction extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		log.info("----------");
-		log.info("Doing post");
+		log.debug("----------");
+		log.debug("Doing post");
 		resp.setContentType("application/text");
 		OutputStream out = resp.getOutputStream();
-		out.write("Writing file to COSMOS!".getBytes());
+		Listener lis = new OutputStreamListener(out);
+		log(lis, "Writing file to COSMOS...");
 		out.flush();
-		writeZipFileToDisc(req, resp);
-		out.write("\n\nDone.\n".getBytes());
+		writeZipFileToDisc(req, resp, lis);
+		log(lis, "\n\nDone.\n");
 		out.flush();
-		log.info("Done.");
 	}
 
-	private void writeZipFileToDisc(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		log.info("Getting connection");
+	private void writeZipFileToDisc(HttpServletRequest req, HttpServletResponse resp, Listener lis) throws ServletException, IOException {
+		log(lis, "------");
+		log(lis, "Getting connections");
 		CosmosConnections conns = new CosmosConnections(mysqlDs, databricksDs);
+		log(lis, "Got connections");
+		log(lis, "------");
 		try {
-			log.info("Getting file");
+			log(lis, "Getting file");
 			Part filePart = req.getPart("file");
 			InputStream in = filePart.getInputStream();
 			String fileName = filePart.getSubmittedFileName();
-			log.info("Got file: " + fileName);
-			File uploadDir = getUploadFileDir(fileName);
+			log(lis, "Got file: " + fileName);
+			File uploadDir = getUploadFileDir(fileName, lis);
 			File file = new File(uploadDir, fileName);
-			/*
-			log.info("Wrting file");
+			log(lis, "Wrting file");
 			FileUtil.write(in, file);
-			log.info("Done writing file");
-			log.info("Zipfile size on disc: " + file.length());
-			log.info("Unzipping");
+			log(lis, "Done writing file");
+			log(lis, "Zipfile size on disc: " + file.length());
+			log(lis, "Unzipping");
 			File srcDir = ZipUtil.unzip(file, file.getParentFile());
-			log.info("Done unzipping");
-			log.info("Source Dir: " + FileUtil.getCanonicalPath(srcDir));
-			UploadDir.uploadDir(srcDir, "greshje", conns);
+			log(lis, "Done unzipping");
+			log(lis, "Source Dir: " + FileUtil.getCanonicalPath(srcDir));
+			log(lis, "Done writing file to server");
+			log(lis, "------");
+			log(lis, "Uploading data to Databricks");
+			// TODO: FIX UID HERE
+			UploadDir.uploadDir(srcDir, "greshje", conns, lis);
 			conns.commit();
-			*/
 		} finally {
 			conns.close();
 		}
 	}
 	
-	private File getUploadFileDir(String fileName) {
+	private File getUploadFileDir(String fileName, Listener lis) {
 		String serverFilesRoot = MySqlParams.getServerFileRoot();
 		File rtn = null;
 		int cnt = -1;
@@ -100,9 +107,14 @@ public class UploadAction extends HttpServlet {
 			fileExists = rtn.exists();
 		}
 		boolean success = rtn.mkdirs();
-		log.info("Upload dir: " + FileUtil.getCanonicalPath(rtn));
-		log.info("Dir created: " + success);
+		log(lis, "Upload dir: " + FileUtil.getCanonicalPath(rtn));
+		log(lis, "Dir created: " + success);
 		return rtn;
+	}
+	
+	private void log(Listener lis, String str) {
+		log.info(str);
+		lis.notify(str);
 	}
 	
 }

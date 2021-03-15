@@ -4,7 +4,7 @@
 		<script>
 			postUploadFile = function() {
 			    $("#status").val("");
-			    YES.getAndShowStatus("status", "${home}/Upload");
+			    YES.getAndShowStatus("uploadForm", "status", "${home}/Upload");
 			}
 		</script>
 	</head>
@@ -19,20 +19,20 @@
 						<table border="0">
 							<tr>
 								<td>
+									<br/>
 									<input type="file" id="file" name="file" style="width: 600px"/>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<button style="width:100%">Submit Form</button>
+									<br/>
+									Status:
+									<textarea wrap="off" readonly id="status" name="status" style="height: 200px;width: 100%;color: gray;">Select file and press submit...</textarea>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<br/>
-									<div id="foo"></div>
-									Status:
-									<textarea id="status" name="status" style="height: 200px;width: 100%">Select file and press submit...</textarea>
+									<input type="button" value="Upload file to Cosmos" style="width:100%" onclick="javascript:postUploadFile()" />
 								</td>
 							</tr>
 						</table>
@@ -43,6 +43,5 @@
 		</div>
 	</body>
 	
-									<button style="width:100%" onclick="javascript:postUploadFile()">Submit</button>
 	
 </html>
