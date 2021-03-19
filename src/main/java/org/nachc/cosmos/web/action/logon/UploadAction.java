@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.annotation.Resource;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -76,7 +76,8 @@ public class UploadAction extends HttpServlet {
 			log(lis, "Done writing file");
 			log(lis, "Zipfile size on disc: " + file.length());
 			log(lis, "Unzipping");
-			File srcDir = ZipUtil.unzip(file, file.getParentFile());
+			ZipUtil.unzip(file, file.getParentFile());
+			File srcDir = getUnzippedRootFile(file);
 			log(lis, "Done unzipping");
 			log(lis, "Source Dir: " + FileUtil.getCanonicalPath(srcDir));
 			log(lis, "Done writing file to server");
@@ -88,6 +89,17 @@ public class UploadAction extends HttpServlet {
 		} finally {
 			conns.close();
 		}
+	}
+	
+	private File getUnzippedRootFile(File srcFile) {
+		File dir = srcFile.getParentFile();
+		List<File> files = FileUtil.list(dir);
+		for(File file : files) {
+			if(file.isDirectory()) {
+				return file;
+			}
+		}
+		return null;
 	}
 	
 	private File getUploadFileDir(String fileName, Listener lis) {
@@ -114,7 +126,9 @@ public class UploadAction extends HttpServlet {
 	
 	private void log(Listener lis, String str) {
 		log.info(str);
-		lis.notify(str);
+		if(lis != null) {
+			lis.notify(str);
+		}
 	}
 	
 }

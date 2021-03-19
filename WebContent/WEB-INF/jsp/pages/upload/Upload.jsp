@@ -6,6 +6,13 @@
 			    $("#status").val("");
 			    YES.getAndShowStatus("uploadForm", "status", "${home}/Upload");
 			}
+			
+			$("#status").change(
+				function() {
+					$('#status').scrollTop($('#status')[0].scrollHeight);
+				}
+			);
+			
 		</script>
 	</head>
 	<body>

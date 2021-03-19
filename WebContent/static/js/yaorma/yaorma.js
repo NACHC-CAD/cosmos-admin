@@ -239,6 +239,7 @@ YES.getAndShowStatus = function(formId, listenerId, url) {
                 var progressResponse;
                 var response = e.currentTarget.response;
 				jQuery("#" + listenerId).val(response);
+				$("#" + listenerId).scrollTop($("#" + listenerId)[0].scrollHeight);
             }
         }
     });
