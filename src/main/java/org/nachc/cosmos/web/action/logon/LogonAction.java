@@ -14,8 +14,8 @@ import javax.sql.DataSource;
 
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.PersonDvo;
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.ProjectDvo;
-import org.nachc.cad.cosmos.util.mysql.params.MySqlParams;
 import org.nachc.cosmos.web.model.project.list.ProjectList;
+import org.nachc.cosmos.web.util.params.MySqlParams;
 import org.yaorma.dao.Dao;
 import org.yaorma.database.Database;
 

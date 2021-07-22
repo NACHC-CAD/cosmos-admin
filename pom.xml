@@ -26,12 +26,21 @@
 			<version>1.0.4-SNAPSHOT</version>
 		</dependency>
 		-->
+		
 		<dependency>
 			<groupId>org.nachc.cad</groupId>
 			<artifactId>curlew</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-	
+
+		<!-- CORE NACHC FRAMEWORK STUFF -->
+		<dependency>
+			<groupId>NACHC-CAD</groupId>
+			<artifactId>core</artifactId>
+			<version>1.0.4-SNAPSHOT</version>
+		</dependency>
+
+		
 		<!-- LOMBOK (Lombok jar also needs to be added to Eclipse IDE) -->
         <dependency>
             <groupId>org.projectlombok</groupId>

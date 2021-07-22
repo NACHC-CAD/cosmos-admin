@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -17,9 +18,9 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.nachc.cad.cosmos.util.connection.CosmosConnections;
-import org.nachc.cad.cosmos.util.mysql.params.MySqlParams;
 import org.nachc.cad.cosmos.util.project.UploadDir;
 import org.nachc.cosmos.web.util.listener.OutputStreamListener;
+import org.nachc.cosmos.web.util.params.MySqlParams;
 import org.yaorma.util.time.TimeUtil;
 
 import com.nach.core.util.file.FileUtil;
@@ -55,12 +56,21 @@ public class UploadAction extends HttpServlet {
 		out.flush();
 		boolean isValid = validateRequest(req, resp, lis);
 		if(isValid) {
-			writeZipFileToDisc(req, resp, lis);
+			try {
+				writeZipFileToDisc(req, resp, lis);
+			} catch (Throwable thr) {
+				PrintStream ps = new PrintStream(out);
+				thr.printStackTrace(ps);
+				thr.printStackTrace();
+				log(lis, "\n\n! ! ! An Error occured processing this file (stactrace is above for reference) ! ! !");
+				log(lis, "ERROR MESSAGE: ");
+				log(lis, thr.getMessage());
+			}
 		} else {
 			log(lis, "\n--- VALIDATION FAILED ---");
 			log(lis, "The selected file could not be processed.");
 		}
-		log(lis, "\n\nDone.\n");
+		log(lis, "\n\nDone.");
 		out.flush();
 	}
 	
