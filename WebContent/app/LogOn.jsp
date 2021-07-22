@@ -11,7 +11,7 @@
 				<br/>
 				The Integrated Informatics System for the National Association of Community Health Centers
 			</p>
-			<form action="${home}/LogOn" method="post">
+			<form action="" method="post">
 				<input type="hidden" id="attempt" name="attempt" value="${attempt + 1}" />
 				<table class="yaormaBigBox">
 					<tr>
