@@ -56,28 +56,4 @@ public class LogonAction extends HttpServlet {
 
 	}
 
-	// TODO: Move this to Shiro Realm
-	private boolean authenticate(HttpServletRequest req, HttpServletResponse resp, Connection conn) throws ServletException, IOException {
-		String uid = req.getParameter("uid");
-		String pwd = req.getParameter("pwd");
-		String key = MySqlParams.getKey();
-		String attempt = req.getParameter("attempt");
-		req.setAttribute("uid", uid);
-		req.setAttribute("pwd", pwd);
-		req.setAttribute("attempt", attempt);
-		log.info("looking for: " + uid);
-		PersonDvo dvo = Dao.find(new PersonDvo(), "username", uid, conn);
-		if (dvo == null) {
-			log.info("Did not find: " + uid);
-			return false;
-		}
-		log.info("Authenticating password for: " + uid);
-		String salt = dvo.getSalt();
-		PasswordUtil util = new PasswordUtil(salt, key);
-		String expected = dvo.getPassword();
-		boolean rtn = util.authenticate(pwd, expected);
-		log.info("Authenicated (" + uid + "): " + rtn);
-		return rtn;
-	}
-
 }
