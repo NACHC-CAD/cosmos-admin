@@ -24,6 +24,7 @@ import org.yaorma.util.time.TimeUtil;
 
 import com.nach.core.util.file.FileUtil;
 import com.nach.core.util.file.ZipUtil;
+import com.nach.core.util.string.StringUtil;
 import com.nach.core.util.web.listener.Listener;
 
 import lombok.extern.slf4j.Slf4j;
@@ -52,9 +53,37 @@ public class UploadAction extends HttpServlet {
 		Listener lis = new OutputStreamListener(out);
 		log(lis, "Writing file to COSMOS...");
 		out.flush();
-		writeZipFileToDisc(req, resp, lis);
+		boolean isValid = validateRequest(req, resp, lis);
+		if(isValid) {
+			writeZipFileToDisc(req, resp, lis);
+		} else {
+			log(lis, "\n--- VALIDATION FAILED ---");
+			log(lis, "The selected file could not be processed.");
+		}
 		log(lis, "\n\nDone.\n");
 		out.flush();
+	}
+	
+	private boolean validateRequest(HttpServletRequest req, HttpServletResponse resp, Listener lis) {
+		log(lis, "Validating request...");
+		try {
+			Part filePart = req.getPart("file");
+			InputStream in = filePart.getInputStream();
+			String fileName = filePart.getSubmittedFileName();
+			if(in == null || StringUtil.isEmpty(fileName)) {
+				log(lis, "Could not read input file (file was null)");
+				log(lis, "Validation failed");
+				return false;
+			} else {
+				log(lis, "Finishing validation");
+				in.close();
+			}
+			log(lis, "Validation complete.");
+			return true;
+		} catch(Exception exp) {
+			log(lis, "Could not read input file.");
+			return false;
+		}
 	}
 
 	private void writeZipFileToDisc(HttpServletRequest req, HttpServletResponse resp, Listener lis) throws ServletException, IOException {
@@ -84,7 +113,7 @@ public class UploadAction extends HttpServlet {
 			log(lis, "------");
 			log(lis, "Uploading data to Databricks");
 			// TODO: FIX UID HERE
-			UploadDir.uploadDir(srcDir, "greshje", conns, lis);
+			UploadDir.uploadDir(srcDir, "greshje", conns, lis, true);
 			conns.commit();
 		} finally {
 			conns.close();
