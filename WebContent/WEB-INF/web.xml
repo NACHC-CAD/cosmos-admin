@@ -22,6 +22,15 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>LogOff</servlet-name>
+		<servlet-class>org.nachc.cosmos.web.action.logoff.LogOffServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LogOff</servlet-name>
+		<url-pattern>/LogOff</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>ProjectOverview</servlet-name>
 		<servlet-class>org.nachc.cosmos.web.action.logon.ProjectOverviewAction</servlet-class>
 	</servlet>

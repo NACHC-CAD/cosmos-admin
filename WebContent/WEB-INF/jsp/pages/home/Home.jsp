@@ -3,6 +3,7 @@
 <html>
 	<body>
 		<div class="bodyContent">
+			<%@ include file="/WEB-INF/jsp/headerfooter/header/pageHeader.jsp"%>
 			<h1>Cosmos Administration</h1>
 			<div id="jquery-tabs">
 				<ul>
