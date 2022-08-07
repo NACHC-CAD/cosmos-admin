@@ -23,17 +23,9 @@
 		<dependency>
 			<groupId>org.nachc.cad</groupId>
 			<artifactId>curlew</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.002-SNAPSHOT</version>
 		</dependency>
 
-		<!-- CORE NACHC FRAMEWORK STUFF -->
-		<dependency>
-			<groupId>NACHC-CAD</groupId>
-			<artifactId>core</artifactId>
-			<version>1.0.4-SNAPSHOT</version>
-		</dependency>
-
-		
 		<!-- 
 		*
 		* SHIRO STUFF
