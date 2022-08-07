@@ -6,7 +6,7 @@ import com.nach.core.util.props.PropertiesUtil;
 
 public class MySqlParams {
 
-	private static final Properties PROPS = PropertiesUtil.getAsProperties("/auth/mysql-auth.properties");
+	private static final Properties PROPS = PropertiesUtil.getAsProperties("/auth/_web-app-mysql-auth.properties");
 
 	public static String getKey() {
 		return PROPS.getProperty("key");
