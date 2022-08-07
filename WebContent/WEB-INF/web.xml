@@ -57,6 +57,15 @@
 		<url-pattern>/DeleteLotHome</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>GetDataLotsForOrgProject</servlet-name>
+		<servlet-class>org.nachc.cosmos.web.action.logon.queries.lot.GetDataLotsForOrgProjectAction</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetDataLotsForOrgProject</servlet-name>
+		<url-pattern>/GetDataLotsForOrgProject</url-pattern>
+	</servlet-mapping>
+
 	<!-- 
 	*
 	* shiro stuff

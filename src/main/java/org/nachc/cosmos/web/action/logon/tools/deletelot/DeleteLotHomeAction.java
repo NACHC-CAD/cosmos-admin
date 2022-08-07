@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.nachc.cad.cosmos.dvo.mysql.cosmos.OrgCodeDvo;
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.ProjectDvo;
+import org.nachc.cosmos.web.util.query.org.GetAllOrgs;
 import org.nachc.cosmos.web.util.query.project.GetAllProjects;
 import org.yaorma.database.Database;
 
@@ -31,9 +33,15 @@ public class DeleteLotHomeAction extends HttpServlet {
 		Connection conn = null;
 		try {
 			log.info("Loading data for delete lot tool...");
+			// get the connection
 			conn = ds.getConnection();
+			// get the project list
 			List<ProjectDvo> projectList = GetAllProjects.exec(conn);
 			req.setAttribute("projectList", projectList);
+			// get the org list
+			List<OrgCodeDvo> orgList = GetAllOrgs.exec(conn);
+			req.setAttribute("orgList", orgList);
+			// done
 			log.info("Got " + projectList.size() + " projects.");
 			log.info("Forwarding to: " + FORWARD);
 			RequestDispatcher disp = req.getRequestDispatcher(FORWARD);
