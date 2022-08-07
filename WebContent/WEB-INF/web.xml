@@ -48,6 +48,15 @@
 		<url-pattern>/Upload</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>DeleteLotHome</servlet-name>
+		<servlet-class>org.nachc.cosmos.web.action.logon.tools.deletelot.DeleteLotHomeAction</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeleteLotHome</servlet-name>
+		<url-pattern>/DeleteLotHome</url-pattern>
+	</servlet-mapping>
+
 	<!-- 
 	*
 	* shiro stuff
