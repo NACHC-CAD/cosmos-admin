@@ -44,8 +44,19 @@
 			}
 
 			deleteLot = function() {
-			    $("#deleteStatusLog").val("");
-			    YES.getAndShowStatus("deleteForm", "deleteStatusLog", "${home}/DeleteLot");
+				// set the variable values
+				project = $("#project").children("option:selected").val();
+				orgCode = $("#org").children("option:selected").val();
+				dataLot = $("#dataLot").children("option:selected").val();
+				alert("Project: " + project);
+			    // set the form values
+			    $("#projectInput").val(project);
+			    $("#orgInput").val(orgCode);
+			    $("#dataLotInput").val(dataLot);
+				// update the gui
+				$("#deleteStatusLog").val("");
+			    // submit the form
+			    YES.postFormAndShowStatus("deleteForm", "deleteStatusLog", "${home}/DeleteLot");
 			}
 			
 			$("#deleteStatusLog").change(

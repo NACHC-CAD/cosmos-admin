@@ -11,7 +11,8 @@
 			<th><nobr>File Size</nobr></th>
 			<th><nobr>Units</nobr></th>
 			<th><nobr>Provided By</nobr></th>
-			<th><nobr>Provided Date</nobr></th>
+			<th><nobr>Date Provided</nobr></th>
+			<th><nobr>Date Uploaded</nobr></th>
 		</tr>
 		<c:forEach items="${rawTableFileRecords}" var="rawTableFileRecord">
 			<tr>
@@ -23,6 +24,7 @@
 				<td>${rawTableFileRecord.fileSizeUnits}</td>
 				<td>${rawTableFileRecord.providedBy}</td>
 				<td>${rawTableFileRecord.providedDate}</td>
+				<td>${rawTableFileRecord.createdDate}</td>
 			</tr>
 		</c:forEach>
 	</table>
@@ -32,9 +34,9 @@
 	<button onclick="javascript:deleteLot();">Delete These Files</button>
 	<br/><br/>
 	<form id="deleteForm" name="deleteForm">
-		<input type="hidden" name="project" />
-		<input type="hidden" name="org" />
-		<input type="hidden" name="dataLot" />
+		<input id="projectInput" type="hidden" name="project" />
+		<input id="orgInput" type="hidden" name="org" />
+		<input id="dataLotInput" type="hidden" name="dataLot" />
 		<table border="1">
 			<tr>
 				<td><b>Status:<b/></td>

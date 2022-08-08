@@ -2,6 +2,7 @@ package org.nachc.cosmos.web.action.logon.tools.deletelot;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -20,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DeleteLotAction extends HttpServlet {
 
+	private static final int NUMBER_OF_TRIES = 5;
+	
 	@Resource(lookup = "java:/MySqlDS")
 	private DataSource mysqlDs;
 
@@ -34,11 +37,17 @@ public class DeleteLotAction extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.debug("----------");
-		log.debug("Doing post");
+		log.debug("Processing request...");
+		int tryNumber = 0;
+		processRequest(req, resp, tryNumber);
+	}
+
+	private void processRequest(HttpServletRequest req, HttpServletResponse resp, int tryNumber) throws ServletException, IOException {
 		resp.setContentType("application/text");
 		OutputStream out = resp.getOutputStream();
 		Listener lis = new OutputStreamListener(out);
 		log(lis, "Deleting data lot from COSMOS...");
+		log(lis, "Try number: " + tryNumber);
 		out.flush();
 		log(lis, "Getting database connection...");
 		CosmosConnections conns = new CosmosConnections(mysqlDs, databricksDs);
@@ -53,13 +62,26 @@ public class DeleteLotAction extends HttpServlet {
 			log(lis, "\tOrg:     " + org);
 			log(lis, "\tLot:     " + dataLot);
 			log(lis, "Done.");
-		} catch (Exception exp) {
-			throw new RuntimeException(exp);
+		} catch (Throwable thr) {
+			tryNumber++;
+			if(tryNumber <= NUMBER_OF_TRIES) {
+				processRequest(req, resp, tryNumber);
+			} else {
+				log(lis, "An exception occured...");
+				PrintStream ps = new PrintStream(out);
+				thr.printStackTrace(ps);
+				thr.printStackTrace();
+				log(lis, "\n\n! ! ! An Error occured processing this request (stactrace is above for reference) ! ! !");
+				log(lis, "ERROR MESSAGE: ");
+				log(lis, thr.getMessage());
+				throw new RuntimeException(thr);
+			}
 		} finally {
 			conns.close();
 		}
 	}
 
+	
 	private void log(Listener lis, String str) {
 		log.info(str);
 		if (lis != null) {

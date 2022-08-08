@@ -246,6 +246,28 @@ YES.getAndShowStatus = function(formId, listenerId, url) {
 
 };
 
+YES.postFormAndShowStatus = function(formId, listenerId, url) {
+	// based on https://gist.github.com/sohelrana820/63f029d3aa12936afbc50eb785c496c0
+	var form = $("#" + formId);
+	var data = form.serialize();
+	alert(JSON.stringify(data, null, 2));
+	$.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        xhrFields: {
+            // Getting on progress streaming response
+            onprogress: function(e) {
+                var progressResponse;
+                var response = e.currentTarget.response;
+				jQuery("#" + listenerId).val(response);
+				$("#" + listenerId).scrollTop($("#" + listenerId)[0].scrollHeight);
+            }
+        }
+    });
+
+};
+
 $( function() {
   $( "#jquery-tabs" ).tabs();
 } );
