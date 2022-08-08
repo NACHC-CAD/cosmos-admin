@@ -10,6 +10,8 @@
 		</c:forEach>	
 	</select>
 	<br/><br/>
+	<button onclick="javascript:backToSelectProject();">Back</button>
+	&nbsp;
 	<button onclick="javascript:getRawTableFileRecords();">Next</button>
 	
 </div>

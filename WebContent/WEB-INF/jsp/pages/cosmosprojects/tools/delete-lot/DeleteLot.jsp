@@ -36,6 +36,13 @@
 				$("#dataLot").prop("disabled", false);
 			}
 			
+			function backToSelectProject() {
+				$("#rawTableFileRecords").html("");
+				$("#lotPickList").html("");
+				$("#project").prop("disabled", false);
+				$("#org").prop("disabled", false);
+			}
+			
 		</script>
 	</head>
 
