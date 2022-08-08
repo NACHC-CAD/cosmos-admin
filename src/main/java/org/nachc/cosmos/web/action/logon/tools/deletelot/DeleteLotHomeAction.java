@@ -30,6 +30,11 @@ public class DeleteLotHomeAction extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doPost(req, resp);
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Connection conn = null;
 		try {
 			log.info("Loading data for delete lot tool...");

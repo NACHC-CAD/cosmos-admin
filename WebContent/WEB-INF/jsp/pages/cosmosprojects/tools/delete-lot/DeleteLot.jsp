@@ -42,12 +42,23 @@
 				$("#project").prop("disabled", false);
 				$("#org").prop("disabled", false);
 			}
+
+			deleteLot = function() {
+			    $("#deleteStatusLog").val("");
+			    YES.getAndShowStatus("deleteForm", "deleteStatusLog", "${home}/DeleteLot");
+			}
 			
+			$("#deleteStatusLog").change(
+				function() {
+					$('#deleteStatusLog').scrollTop($('#deleteStatusLog')[0].scrollHeight);
+				}
+			);
+
 		</script>
 	</head>
 
 	<h2>Delete Lot Tool</h2>
-	This tool will PERMENANTLY DELETE the data lot you select and choose to delete.
+	This tool will PERMANENTLY DELETE the data lot you select and choose to delete.
 	<br/>
 	Please use cautiously.  With great power comes great responsibility.  
 	<br/>

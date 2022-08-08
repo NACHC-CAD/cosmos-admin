@@ -29,5 +29,26 @@
 	<br/><br/>
 	<button onclick="javascript:backToSelectLot();">Back</button>
 	&nbsp;
-	<button>Delete These Files</button>
+	<button onclick="javascript:deleteLot();">Delete These Files</button>
+	<br/><br/>
+	<form id="deleteForm" name="deleteForm">
+		<input type="hidden" name="project" />
+		<input type="hidden" name="org" />
+		<input type="hidden" name="dataLot" />
+		<table border="1">
+			<tr>
+				<td><b>Status:<b/></td>
+			</tr>
+			<tr>
+				<td>
+					<textarea 
+						wrap="off" 
+						readonly 
+						id="deleteStatusLog" 
+						name="deleteStatusLog" 
+						style="height: 200px;width: 800px;color: gray;">Press the "Delete These Files" button to PERMANENTLY DELETE the above files...</textarea>
+				</td>
+			</tr>
+		</table>
+	</form>
 </div>

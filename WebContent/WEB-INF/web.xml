@@ -75,6 +75,15 @@
 		<url-pattern>/GetRawTableFileRecords</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>DeleteLot</servlet-name>
+		<servlet-class>org.nachc.cosmos.web.action.logon.tools.deletelot.DeleteLotAction</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeleteLot</servlet-name>
+		<url-pattern>/DeleteLot</url-pattern>
+	</servlet-mapping>
+
 	<!-- 
 	*
 	* shiro stuff

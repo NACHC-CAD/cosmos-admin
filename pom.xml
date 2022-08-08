@@ -19,13 +19,24 @@
 	<dependencies>
 		
 		<!-- CORE NACHC FRAMEWORK STUFF -->
-
 		<dependency>
 			<groupId>org.nachc.cad</groupId>
 			<artifactId>curlew</artifactId>
 			<version>0.0.002-SNAPSHOT</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.nachc.cad.tools</groupId>
+			<artifactId>core</artifactId>
+			<version>0.0.14</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.nachc.cad.tools</groupId>
+			<artifactId>yaorma</artifactId>
+			<version>0.0.14</version>
+		</dependency>
+	
 		<!-- 
 		*
 		* SHIRO STUFF
@@ -154,6 +165,12 @@
 				<version>3.0.0</version>
 				<configuration>
 					<warSourceDirectory>WebContent</warSourceDirectory>
+			        <webResources>
+			            <resource>
+			               <directory>lib/SimbaSparkJDBC42-2.6.16.1020</directory>
+			               <targetPath>WEB-INF/lib</targetPath>
+			            </resource>
+			        </webResources>
 				</configuration>
 			</plugin>
 		</plugins>
