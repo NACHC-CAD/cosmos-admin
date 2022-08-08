@@ -250,7 +250,6 @@ YES.postFormAndShowStatus = function(formId, listenerId, url) {
 	// based on https://gist.github.com/sohelrana820/63f029d3aa12936afbc50eb785c496c0
 	var form = $("#" + formId);
 	var data = form.serialize();
-	alert(JSON.stringify(data, null, 2));
 	$.ajax({
         type: "POST",
         url: url,

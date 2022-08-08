@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>org.nachc.cad</groupId>
 			<artifactId>curlew</artifactId>
-			<version>0.0.002-SNAPSHOT</version>
+			<version>0.1.001-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

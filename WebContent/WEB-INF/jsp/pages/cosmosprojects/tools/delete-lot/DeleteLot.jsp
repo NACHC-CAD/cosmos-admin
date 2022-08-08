@@ -48,7 +48,6 @@
 				project = $("#project").children("option:selected").val();
 				orgCode = $("#org").children("option:selected").val();
 				dataLot = $("#dataLot").children("option:selected").val();
-				alert("Project: " + project);
 			    // set the form values
 			    $("#projectInput").val(project);
 			    $("#orgInput").val(orgCode);

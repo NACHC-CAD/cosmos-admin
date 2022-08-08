@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 
 import org.nachc.cad.cosmos.util.connection.CosmosConnections;
 import org.nachc.cosmos.web.util.listener.OutputStreamListener;
+import org.yaorma.util.time.TimeUtil;
 
 import com.nach.core.util.web.listener.Listener;
 
@@ -22,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DeleteLotAction extends HttpServlet {
 
 	private static final int NUMBER_OF_TRIES = 5;
-	
+
 	@Resource(lookup = "java:/MySqlDS")
 	private DataSource mysqlDs;
 
@@ -43,28 +44,41 @@ public class DeleteLotAction extends HttpServlet {
 	}
 
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp, int tryNumber) throws ServletException, IOException {
+		// set up listener to write progress back to client
 		resp.setContentType("application/text");
 		OutputStream out = resp.getOutputStream();
 		Listener lis = new OutputStreamListener(out);
 		log(lis, "Deleting data lot from COSMOS...");
 		log(lis, "Try number: " + tryNumber);
 		out.flush();
-		log(lis, "Getting database connection...");
-		CosmosConnections conns = new CosmosConnections(mysqlDs, databricksDs);
-		log(lis, "Got database connection.");
+		CosmosConnections conns = null;
 		try {
+			// get the database connection
+			log(lis, "Getting database connection...");
+			conns = new CosmosConnections(mysqlDs, databricksDs);
+			log(lis, "Got database connection.");
+			// do the delete
 			log(lis, "Doing delete...");
+			// get the parameters
 			String project = req.getParameter("project");
-			String org = req.getParameter("org");
+			String orgCode = req.getParameter("org");
 			String dataLot = req.getParameter("dataLot");
+			// echo parameters
 			log(lis, "Deleting the following:");
 			log(lis, "\tProject: " + project);
-			log(lis, "\tOrg:     " + org);
+			log(lis, "\tOrg:     " + orgCode);
 			log(lis, "\tLot:     " + dataLot);
+			// do the delete
+			log(lis, "Doing the delete...");
+//			org.nachc.cad.cosmos.action.delete.DeleteLotAction.deleteLotFiles(project, orgCode, dataLot, conns);
+			log(lis, "Done with delete.");
+			// done
 			log(lis, "Done.");
 		} catch (Throwable thr) {
 			tryNumber++;
-			if(tryNumber <= NUMBER_OF_TRIES) {
+			if (tryNumber <= NUMBER_OF_TRIES) {
+				log(lis, "Hmm, couldn't quite connect.  This happens sometimes. Trying again...");
+				TimeUtil.sleep(3);
 				processRequest(req, resp, tryNumber);
 			} else {
 				log(lis, "An exception occured...");
@@ -81,7 +95,6 @@ public class DeleteLotAction extends HttpServlet {
 		}
 	}
 
-	
 	private void log(Listener lis, String str) {
 		log.info(str);
 		if (lis != null) {
