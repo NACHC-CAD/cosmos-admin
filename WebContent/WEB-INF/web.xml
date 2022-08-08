@@ -66,6 +66,15 @@
 		<url-pattern>/GetDataLotsForOrgProject</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>GetRawTableFileRecords</servlet-name>
+		<servlet-class>org.nachc.cosmos.web.action.logon.queries.rawtablefile.GetRawTableFileRecordsAction</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetRawTableFileRecords</servlet-name>
+		<url-pattern>/GetRawTableFileRecords</url-pattern>
+	</servlet-mapping>
+
 	<!-- 
 	*
 	* shiro stuff

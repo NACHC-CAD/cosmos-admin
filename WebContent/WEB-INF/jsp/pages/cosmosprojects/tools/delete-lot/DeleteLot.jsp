@@ -5,16 +5,37 @@
 	<head>
 		<script>
 			function getLots() {
-				projectGuid = $("#project").children("option:selected").val();
+				project = $("#project").children("option:selected").val();
 				orgCode = $("#org").children("option:selected").val();
 				forwardTo = "/WEB-INF/jsp/pages/cosmosprojects/tools/delete-lot/LotPickList.jsp";
-				alert(orgCode);
 				url = "${home}/GetDataLotsForOrgProject";
-				url = url + "?projectGuid=" + projectGuid;
+				url = url + "?project=" + project;
 				url = url + "&orgCode=" + orgCode;
 				url = url + "&forwardTo=" + forwardTo
 				$("#lotPickList").load(url);
+				$("#project").prop("disabled", true);
+				$("#org").prop("disabled", true);
 			}
+			
+			function getRawTableFileRecords() {
+				project = $("#project").children("option:selected").val();
+				orgCode = $("#org").children("option:selected").val();
+				dataLot = $("#dataLot").children("option:selected").val();
+				forwardTo = "/WEB-INF/jsp/pages/cosmosprojects/tools/delete-lot/RawTableFileRecordList.jsp";
+				url = "${home}/GetRawTableFileRecords";
+				url = url + "?project=" + project;
+				url = url + "&orgCode=" + orgCode;
+				url = url + "&dataLot=" + dataLot;
+				url = url + "&forwardTo=" + forwardTo
+				$("#rawTableFileRecords").load(url);
+				$("#dataLot").prop("disabled", true);
+			}
+			
+			function backToSelectLot() {
+				$("#rawTableFileRecords").html("");
+				$("#dataLot").prop("disabled", false);
+			}
+			
 		</script>
 	</head>
 
@@ -44,6 +65,7 @@
 	<br/>
 	<br/>
 	<div id="lotPickList"></div>
+	<div id="rawTableFileRecords"></div>
 
 
 
