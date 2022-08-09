@@ -54,10 +54,13 @@ public class UploadAction extends HttpServlet {
 		Listener lis = new OutputStreamListener(out);
 		log(lis, "Writing file to COSMOS...");
 		out.flush();
+		log(lis, "Doing validation of request...");
 		boolean isValid = validateRequest(req, resp, lis);
 		if(isValid) {
 			try {
+				log(lis, "Writing zip files to disc...");
 				writeZipFileToDisc(req, resp, lis);
+				log(lis, "Done writing zip files to disc.");
 			} catch (Throwable thr) {
 				PrintStream ps = new PrintStream(out);
 				thr.printStackTrace(ps);
@@ -122,7 +125,7 @@ public class UploadAction extends HttpServlet {
 			log(lis, "Done writing file to server");
 			log(lis, "------");
 			log(lis, "Uploading data to Databricks");
-			// TODO: FIX UID HERE
+			// TODO: FIX UID HERE (should not be "greshje")
 			UploadDir.uploadDir(srcDir, "greshje", conns, lis, true);
 			conns.commit();
 		} finally {
