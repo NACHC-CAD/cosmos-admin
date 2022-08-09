@@ -84,6 +84,15 @@
 		<url-pattern>/DeleteLot</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>GetProjectList</servlet-name>
+		<servlet-class>org.nachc.cosmos.web.action.logon.queries.project.GetProjectListAction</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetProjectList</servlet-name>
+		<url-pattern>/GetProjectList</url-pattern>
+	</servlet-mapping>
+
 	<!-- 
 	*
 	* shiro stuff

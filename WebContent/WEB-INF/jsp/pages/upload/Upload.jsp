@@ -34,11 +34,23 @@
 								<td>
 									<br/>
 									Status:
+								</td>
+							</tr>
+							<tr>
+								<td>
 									<textarea wrap="off" readonly id="status" name="status" style="height: 200px;width: 100%;color: gray;">Select file and press submit...</textarea>
 								</td>
 							</tr>
 							<tr>
 								<td>
+									<br/>
+									<input id="createGroupTables" type="checkbox" checked />
+									<label for="createGroupTables">&nbsp;Create&nbsp;Group&nbsp;Tables</label>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<br/>
 									<input type="button" value="Upload file to Cosmos" style="width:100%" onclick="javascript:postUploadFile()" />
 								</td>
 							</tr>
