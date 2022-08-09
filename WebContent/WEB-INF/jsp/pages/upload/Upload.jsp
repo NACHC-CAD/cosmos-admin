@@ -18,15 +18,17 @@
 	<body>
 		<div align="center">
 			<p>
-				<b>Upload Files (as a single zip)</b>
+				<h1>Upload Files (as a single zip)</h1>
 			</p>
 			<form name="uploadForm" id="uploadForm" action="${home}/Upload" method="post" enctype="multipart/form-data">
-				<table border="1">
+				<table border="1" width="800px">
 					<tr><td>
 						<table border="0">
 							<tr>
+								<td><h2>Upload Zip File</h2></td>
+							</tr>
+							<tr>
 								<td>
-									<br/>
 									<input type="file" id="file" name="file" style="width: 600px"/>
 								</td>
 							</tr>
@@ -51,8 +53,18 @@
 							<tr>
 								<td>
 									<br/>
-									<input type="button" value="Upload file to Cosmos" style="width:100%" onclick="javascript:postUploadFile()" />
+									<input type="button" value="Upload file to Cosmos" onclick="javascript:postUploadFile()" />
 								</td>
+							</tr>
+						</table>
+					</td></tr>
+					<tr><td>
+						<table width="800px">
+							<tr>
+								<td><h2>Create Group Tables</h2></td>
+							</tr>
+							<tr>
+								<td><div id="projectPickList"></div></td>
 							</tr>
 						</table>
 					</td></tr>
@@ -60,6 +72,14 @@
 			</form>
 			<br/><br/><br/><br/>
 		</div>
+		
+		<script>
+			forwardTo = "/WEB-INF/jsp/pages/upload/ProjectPickList.jsp";
+			url = "${home}/GetProjectList";
+			url = url + "?forwardTo=" + forwardTo
+			$("#projectPickList").load(url);
+		</script>
+		
 	</body>
 	
 	
