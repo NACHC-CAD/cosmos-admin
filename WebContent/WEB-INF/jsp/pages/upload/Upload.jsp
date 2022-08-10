@@ -4,7 +4,16 @@
 		<script>
 			postUploadFile = function() {
 			    $("#status").val("");
-			    YES.getAndShowStatus("uploadForm", "status", "${home}/Upload");
+			    createGroupTables = $("#createGroupTables").is(":checked");
+			    if(createGroupTables == "true") {
+			    	$("createGroupTablesFormInput").val("true");
+			    } else {
+			    	$("createGroupTablesFormInput").val("false");
+			    }
+			    url = "";
+			    url = url + "${home}/Upload";
+			    url = url + "?createGroupTables=" + createGroupTables;
+				YES.getAndShowStatus("uploadForm", "status", url);
 			}
 			
 			$("#status").change(
@@ -21,6 +30,7 @@
 				<h1>Upload Files (as a single zip)</h1>
 			</p>
 			<form name="uploadForm" id="uploadForm" action="${home}/Upload" method="post" enctype="multipart/form-data">
+				<input id="createGroupTablesFormInput" type="hidden" value="" />
 				<table border="1" width="800px">
 					<tr><td>
 						<table border="0">
@@ -30,6 +40,12 @@
 							<tr>
 								<td>
 									<input type="file" id="file" name="file" style="width: 600px"/>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input id="createGroupTables" type="checkbox" checked />
+									<label for="createGroupTables">&nbsp;Create&nbsp;Group&nbsp;Tables</label>
 								</td>
 							</tr>
 							<tr>
@@ -45,14 +61,6 @@
 							</tr>
 							<tr>
 								<td>
-									<br/>
-									<input id="createGroupTables" type="checkbox" checked />
-									<label for="createGroupTables">&nbsp;Create&nbsp;Group&nbsp;Tables</label>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<br/>
 									<input type="button" value="Upload file to Cosmos" onclick="javascript:postUploadFile()" />
 								</td>
 							</tr>

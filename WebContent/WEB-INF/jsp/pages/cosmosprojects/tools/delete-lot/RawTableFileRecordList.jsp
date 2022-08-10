@@ -33,24 +33,37 @@
 	&nbsp;
 	<button onclick="javascript:deleteLot();">Delete These Files</button>
 	<br/><br/>
+	<input id="createGroupTablesForDelete" type="checkbox" checked />
+	<label for="createGroupTablesForDelete">&nbsp;Create&nbsp;Group&nbsp;Tables</label>
+
+	<br/><br/>
 	<form id="deleteForm" name="deleteForm">
 		<input id="projectInput" type="hidden" name="project" />
 		<input id="orgInput" type="hidden" name="org" />
 		<input id="dataLotInput" type="hidden" name="dataLot" />
+		<input id="createGroupTablesDeleteFormInput" name="createGroupTablesDeleteFormInput" type="hidden" value="" />
+		
 		<table border="1">
-			<tr>
-				<td><b>Status:<b/></td>
-			</tr>
-			<tr>
-				<td>
-					<textarea 
-						wrap="off" 
-						readonly 
-						id="deleteStatusLog" 
-						name="deleteStatusLog" 
-						style="height: 200px;width: 800px;color: gray;">Press the "Delete These Files" button to PERMANENTLY DELETE the above files...</textarea>
-				</td>
-			</tr>
+			<tr><td>
+				<table border="0">
+					<tr>
+						<td><b>Status:<b/></td>
+					</tr>
+					<tr>
+						<td>
+							<textarea 
+								wrap="off" 
+								readonly 
+								id="deleteStatusLog" 
+								name="deleteStatusLog" 
+								style="height: 200px;width: 800px;color: gray;">Press the "Delete These Files" button to PERMANENTLY DELETE the above files...</textarea>
+						</td>
+					</tr>
+				</table>
+			</td></tr>
 		</table>
+
 	</form>
 </div>
+
+

@@ -124,9 +124,16 @@ public class UploadAction extends HttpServlet {
 			log(lis, "Source Dir: " + FileUtil.getCanonicalPath(srcDir));
 			log(lis, "Done writing file to server");
 			log(lis, "------");
+			String createGroupTables = req.getParameter("createGroupTables");
 			log(lis, "Uploading data to Databricks");
-			// TODO: FIX UID HERE (should not be "greshje")
-			UploadDir.uploadDir(srcDir, "greshje", conns, lis, true);
+			if("true".equalsIgnoreCase(createGroupTables)) {
+				// TODO: FIX UID HERE (should not be "greshje")
+				UploadDir.uploadDir(srcDir, "greshje", conns, lis, true);
+			} else {
+				log(lis, "SKIPPING CREATE GROUP TABLES...");
+				log(lis, "You will need to create the group tables for this project to propegate the data.");
+				UploadDir.uploadDirFilesOnly(srcDir, "greshje", conns, lis);
+			}
 			conns.commit();
 		} finally {
 			conns.close();

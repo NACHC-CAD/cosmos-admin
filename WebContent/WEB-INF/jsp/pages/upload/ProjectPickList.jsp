@@ -8,5 +8,7 @@
 			<option value="${project.code}">${project.code}</option>
 		</c:forEach>	
 	</select>
+	&nbsp;<button>Create Group Tables For Selected Project</button>
 	<br/>
 </div>
+

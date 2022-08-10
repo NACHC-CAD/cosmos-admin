@@ -63,14 +63,20 @@ public class DeleteLotAction extends HttpServlet {
 			String project = req.getParameter("project");
 			String orgCode = req.getParameter("org");
 			String dataLot = req.getParameter("dataLot");
+			String createGroupTables = req.getParameter("createGroupTablesDeleteFormInput");
 			// echo parameters
 			log(lis, "Deleting the following:");
-			log(lis, "\tProject: " + project);
-			log(lis, "\tOrg:     " + orgCode);
-			log(lis, "\tLot:     " + dataLot);
+			log(lis, "\tProject:\t" + project);
+			log(lis, "\tOrg:\t\t" + orgCode);
+			log(lis, "\tLot:\t\t" + dataLot);
+			log(lis, "Group Tables: " + createGroupTables);
 			// do the delete
 			log(lis, "Doing the delete...");
-//			org.nachc.cad.cosmos.action.delete.DeleteLotAction.deleteLotFiles(project, orgCode, dataLot, conns);
+			if("true".equalsIgnoreCase(createGroupTables)) {
+				org.nachc.cad.cosmos.action.delete.DeleteLotAction.deleteLot(project, orgCode, dataLot, conns);
+			} else {
+				org.nachc.cad.cosmos.action.delete.DeleteLotAction.deleteLotFiles(project, orgCode, dataLot, conns);
+			}
 			log(lis, "Done with delete.");
 			// done
 			log(lis, "Done.");

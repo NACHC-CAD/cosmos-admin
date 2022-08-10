@@ -43,6 +43,19 @@
 				$("#org").prop("disabled", false);
 			}
 
+			
+			/*
+			    createGroupTables = $("#createGroupTables").is(":checked");
+			    if(createGroupTables == "true") {
+			    	$("createGroupTablesFormInput").val("true");
+			    } else {
+			    	$("createGroupTablesFormInput").val("false");
+			    }
+			    url = "";
+			    url = url + "${home}/Upload";
+			    url = url + "?createGroupTables=" + createGroupTables;
+			*/
+			
 			deleteLot = function() {
 				// set the variable values
 				project = $("#project").children("option:selected").val();
@@ -52,10 +65,20 @@
 			    $("#projectInput").val(project);
 			    $("#orgInput").val(orgCode);
 			    $("#dataLotInput").val(dataLot);
-				// update the gui
+				// figure out group tables
+			    createGroupTables = $("#createGroupTablesForDelete").is(":checked");
+			    if(createGroupTables == "true") {
+			    	$("createGroupTablesDeleteFormInput").val("true");
+			    } else {
+			    	$("createGroupTablesDeleteFormInput").val("false");
+			    }
+			    // update the gui
 				$("#deleteStatusLog").val("");
 			    // submit the form
-			    YES.postFormAndShowStatus("deleteForm", "deleteStatusLog", "${home}/DeleteLot");
+			    url = "";
+			    url = url + "${home}/DeleteLot";
+			    url = url + "?createGroupTablesDeleteFormInput=" + createGroupTables;
+			    YES.postFormAndShowStatus("deleteForm", "deleteStatusLog", url);
 			}
 			
 			$("#deleteStatusLog").change(
