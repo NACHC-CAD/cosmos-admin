@@ -1,6 +1,8 @@
 <%@ include file="/WEB-INF/jsp/headerfooter/header/componentHeader.jsp"%>
 <html>
 	<head>
+	</head>
+	<body>
 		<script>
 			postUploadFile = function() {
 			    $("#status").val("");
@@ -15,16 +17,7 @@
 			    url = url + "?createGroupTables=" + createGroupTables;
 				YES.getAndShowStatus("uploadForm", "status", url);
 			}
-			
-			$("#status").change(
-				function() {
-					$('#status').scrollTop($('#status')[0].scrollHeight);
-				}
-			);
-			
 		</script>
-	</head>
-	<body>
 		<div align="center">
 			<p>
 				<h1>Upload Files (as a single zip)</h1>

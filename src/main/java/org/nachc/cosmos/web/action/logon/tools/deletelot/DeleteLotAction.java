@@ -97,7 +97,9 @@ public class DeleteLotAction extends HttpServlet {
 				throw new RuntimeException(thr);
 			}
 		} finally {
-			conns.close();
+			if(conns != null) {
+				conns.close();
+			}
 		}
 	}
 

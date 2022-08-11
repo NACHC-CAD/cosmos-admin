@@ -93,6 +93,15 @@
 		<url-pattern>/GetProjectList</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>CreateProjectGroupTables</servlet-name>
+		<servlet-class>org.nachc.cosmos.web.action.logon.tools.projectgrouptable.CreateProjectGroupTablesAction</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CreateProjectGroupTables</servlet-name>
+		<url-pattern>/CreateProjectGroupTables</url-pattern>
+	</servlet-mapping>
+
 	<!-- 
 	*
 	* shiro stuff

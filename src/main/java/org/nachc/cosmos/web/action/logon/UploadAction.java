@@ -100,12 +100,13 @@ public class UploadAction extends HttpServlet {
 	}
 
 	private void writeZipFileToDisc(HttpServletRequest req, HttpServletResponse resp, Listener lis) throws ServletException, IOException {
-		log(lis, "------");
-		log(lis, "Getting connections");
-		CosmosConnections conns = new CosmosConnections(mysqlDs, databricksDs);
-		log(lis, "Got connections");
-		log(lis, "------");
+		CosmosConnections conns = null;
 		try {
+			log(lis, "------");
+			log(lis, "Getting connections");
+			conns = new CosmosConnections(mysqlDs, databricksDs);
+			log(lis, "Got connections");
+			log(lis, "------");
 			log(lis, "Getting file");
 			Part filePart = req.getPart("file");
 			InputStream in = filePart.getInputStream();
