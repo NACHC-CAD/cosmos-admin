@@ -53,7 +53,7 @@ public class CreateProjectGroupTablesAction extends HttpServlet {
 			log(lis, "------");
 			log(lis, "Creating group tables for project: " + project);
 			UploadDir.uploadCreateGroupTablesOnly(project, conns, lis);
-			log(lis, "Done.");
+			log(lis, "Done creating Databricks tables.");
 		} catch (Throwable thr) {
 			PrintStream ps = new PrintStream(out);
 			thr.printStackTrace(ps);
@@ -66,7 +66,8 @@ public class CreateProjectGroupTablesAction extends HttpServlet {
 				conns.close();
 			}
 		}
-		log("Done.");
+		log(lis, "");
+		log(lis, "Done.");
 	}
 
 	private void log(Listener lis, String str) {
