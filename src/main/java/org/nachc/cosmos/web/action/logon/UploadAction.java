@@ -137,7 +137,11 @@ public class UploadAction extends HttpServlet {
 			}
 			conns.commit();
 		} finally {
-			conns.close();
+			log(lis, "Closing connections...");
+			if(conns != null) {
+				conns.close();
+			}
+			log(lis, "Done closing connections.");
 		}
 	}
 	
