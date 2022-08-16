@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -17,14 +18,17 @@ import javax.servlet.http.Part;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.nachc.cad.cosmos.action.create.protocol.raw.params.RawDataFileUploadParams;
 import org.nachc.cad.cosmos.util.connection.CosmosConnections;
 import org.nachc.cad.cosmos.util.project.UploadDir;
 import org.nachc.cosmos.web.util.listener.OutputStreamListener;
 import org.nachc.cosmos.web.util.params.MySqlParams;
+import org.nachc.cosmos.web.util.validation.ValidationException;
 import org.yaorma.util.time.TimeUtil;
 
 import com.nach.core.util.file.FileUtil;
 import com.nach.core.util.file.ZipUtil;
+import com.nach.core.util.props.PropertiesUtil;
 import com.nach.core.util.string.StringUtil;
 import com.nach.core.util.web.listener.Listener;
 
@@ -61,6 +65,12 @@ public class UploadAction extends HttpServlet {
 				log(lis, "Writing zip files to disc...");
 				writeZipFileToDisc(req, resp, lis);
 				log(lis, "Done writing zip files to disc.");
+				log(lis, "\n\nDone.");
+				out.flush();
+			} catch (ValidationException exp) {
+				log(lis, "\n\n! ! ! An Error occured processing this file (stactrace is above for reference) ! ! !");
+				log(lis, "ERROR MESSAGE: ");
+				log(lis, exp.getMessage());
 			} catch (Throwable thr) {
 				PrintStream ps = new PrintStream(out);
 				thr.printStackTrace(ps);
@@ -73,8 +83,6 @@ public class UploadAction extends HttpServlet {
 			log(lis, "\n--- VALIDATION FAILED ---");
 			log(lis, "The selected file could not be processed.");
 		}
-		log(lis, "\n\nDone.");
-		out.flush();
 	}
 	
 	private boolean validateRequest(HttpServletRequest req, HttpServletResponse resp, Listener lis) {
@@ -127,13 +135,23 @@ public class UploadAction extends HttpServlet {
 			log(lis, "------");
 			String createGroupTables = req.getParameter("createGroupTables");
 			log(lis, "Uploading data to Databricks");
+			RawDataFileUploadParams rtn = null;
 			if("true".equalsIgnoreCase(createGroupTables)) {
 				// TODO: FIX UID HERE (should not be "greshje")
-				UploadDir.uploadDir(srcDir, "greshje", conns, lis, true);
+				rtn = UploadDir.uploadDir(srcDir, "greshje", conns, lis, true);
 			} else {
 				log(lis, "SKIPPING CREATE GROUP TABLES...");
 				log(lis, "You will need to create the group tables for this project to propegate the data.");
-				UploadDir.uploadDirFilesOnly(srcDir, "greshje", conns, lis);
+				rtn = UploadDir.uploadDirFilesOnly(srcDir, "greshje", conns, lis);
+			}
+			if(rtn.isValidationSuccess() == false) {
+				log(lis, "");
+				log(lis, "-----------------------");
+				log(lis, "UPLOAD FAILED:");
+				log(lis, rtn.getValidationMessage());
+				log(lis, "-----------------------");
+				log(lis, "");
+				throw new ValidationException("Validation failed, see specific message above.");
 			}
 			conns.commit();
 		} finally {
