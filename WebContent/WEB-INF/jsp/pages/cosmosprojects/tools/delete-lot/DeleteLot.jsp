@@ -4,6 +4,16 @@
 
 	<head>
 		<script>
+
+			function getOrgs() {
+				project = $("#project").children("option:selected").val();
+				forwardTo = "/WEB-INF/jsp/pages/cosmosprojects/tools/delete-lot/OrgPickList.jsp";
+				url = "${home}/GetOrgsForProject";
+				url = url + "?project=" + project;
+				url = url + "&forwardTo=" + forwardTo
+				$("#orgPickList").load(url);
+			}
+
 			function getLots() {
 				project = $("#project").children("option:selected").val();
 				orgCode = $("#org").children("option:selected").val();
@@ -43,19 +53,6 @@
 				$("#org").prop("disabled", false);
 			}
 
-			
-			/*
-			    createGroupTables = $("#createGroupTables").is(":checked");
-			    if(createGroupTables == "true") {
-			    	$("createGroupTablesFormInput").val("true");
-			    } else {
-			    	$("createGroupTablesFormInput").val("false");
-			    }
-			    url = "";
-			    url = url + "${home}/Upload";
-			    url = url + "?createGroupTables=" + createGroupTables;
-			*/
-			
 			deleteLot = function() {
 				// set the variable values
 				project = $("#project").children("option:selected").val();
@@ -97,19 +94,19 @@
 	<br/>
 	
 	<h3>Select Project and Organization</h3>
-	<select id="project" name="project">
+	<select id="project" name="project" onchange="getOrgs();">
 		<option value=""></option>
 		<c:forEach items="${projectList}" var="project">
 			<option value="${project.code}">${project.code}</option>
 		</c:forEach>	
 	</select>
 	&nbsp;&nbsp;
-	<select id="org" name="org">
-		<option value=""></option>
-		<c:forEach items="${orgList}" var="org">
-			<option value="${org.code}">${org.code} (${org.name})</option>
-		</c:forEach>	
-	</select>
+	<span id="orgPickList">
+		<select id="org" name="org">
+			<option disabled="true" value=""></option>
+			<option disabled="true" value="">-- Please Select Project First --</option>
+		</select>
+	</span>
 	<br/>
 	<br/>
 	<button onclick="javascript:getLots();">Next</button>

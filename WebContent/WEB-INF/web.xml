@@ -102,6 +102,15 @@
 		<url-pattern>/CreateProjectGroupTables</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>GetOrgsForProject</servlet-name>
+		<servlet-class>org.nachc.cosmos.web.action.logon.queries.org.GetOrgsForProjectAction</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetOrgsForProject</servlet-name>
+		<url-pattern>/GetOrgsForProject</url-pattern>
+	</servlet-mapping>
+
 	<!-- 
 	*
 	* shiro stuff

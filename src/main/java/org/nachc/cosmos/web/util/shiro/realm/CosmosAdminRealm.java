@@ -100,7 +100,7 @@ public class CosmosAdminRealm extends SimpleAccountRealm {
 		return rtn;
 	}
 
-	public Connection getConnection() {
+	private Connection getConnection() {
 		DataSource dataSource = null;
 		Connection connection = null;
 		try {

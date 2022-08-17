@@ -1,4 +1,4 @@
-package org.nachc.cosmos.web.action.logon.queries.project;
+package org.nachc.cosmos.web.action.logon.queries.org;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,15 +12,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-import org.nachc.cad.cosmos.dvo.mysql.cosmos.ProjectDvo;
-import org.nachc.cad.cosmos.dvo.mysql.cosmos.RawTableFileDvo;
-import org.nachc.cosmos.web.util.query.lot.GetLots;
-import org.nachc.cosmos.web.util.query.project.GetAllProjects;
+import org.nachc.cad.cosmos.dvo.mysql.cosmos.OrgCodeDvo;
+import org.nachc.cosmos.web.util.query.org.GetAllOrgs;
+import org.yaorma.database.Database;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class GetProjectListAction extends HttpServlet {
+public class GetOrgsForProjectAction extends HttpServlet {
 
 	@Resource(lookup = "java:/MySqlDS")
 	private DataSource ds;
@@ -31,17 +30,20 @@ public class GetProjectListAction extends HttpServlet {
 		try {
 			conn = ds.getConnection();
 			String forwardTo = req.getParameter("forwardTo");
-			log.info("Getting projects...");
+			String projectCode = req.getParameter("project");
+			log.info("Getting orgs...");
 			log.info("Forward: " + forwardTo);
-			List<ProjectDvo> projectList = GetAllProjects.exec(conn);
-			req.setAttribute("projectList", projectList);
-			// forward request
+			// get the org list
+			List<OrgCodeDvo> orgList = GetAllOrgs.forProject(conn, projectCode);
+			req.setAttribute("orgList", orgList);
 			RequestDispatcher disp = req.getRequestDispatcher(forwardTo);
 			disp.forward(req, resp);
-			log.info("Done with getDataLotsForOrgProject.");			
+			log.info("Done.");
 		} catch(Throwable thr) {
 			throw new RuntimeException(thr);
+		} finally {
+			Database.close(conn);
 		}
 	}
-
+	
 }

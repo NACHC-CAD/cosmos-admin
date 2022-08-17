@@ -68,7 +68,7 @@ public class UploadAction extends HttpServlet {
 				log(lis, "\n\nDone.");
 				out.flush();
 			} catch (ValidationException exp) {
-				log(lis, "\n\n! ! ! An Error occured processing this file (stactrace is above for reference) ! ! !");
+				log(lis, "\n! ! ! An Error occured processing this file (stactrace is above for reference) ! ! !");
 				log(lis, "ERROR MESSAGE: ");
 				log(lis, exp.getMessage());
 			} catch (Throwable thr) {
