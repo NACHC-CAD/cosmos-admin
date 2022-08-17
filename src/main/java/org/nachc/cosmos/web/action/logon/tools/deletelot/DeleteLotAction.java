@@ -73,12 +73,13 @@ public class DeleteLotAction extends HttpServlet {
 			// do the delete
 			log(lis, "Doing the delete...");
 			if("true".equalsIgnoreCase(createGroupTables)) {
-				org.nachc.cad.cosmos.action.delete.DeleteLotAction.deleteLot(project, orgCode, dataLot, conns);
+				org.nachc.cad.cosmos.action.delete.DeleteLotAction.deleteLot(project, orgCode, dataLot, conns, lis);
 			} else {
 				org.nachc.cad.cosmos.action.delete.DeleteLotAction.deleteLotFiles(project, orgCode, dataLot, conns);
 			}
 			log(lis, "Done with delete.");
 			// done
+			log(lis, "");
 			log(lis, "Done.");
 		} catch (Throwable thr) {
 			tryNumber++;
