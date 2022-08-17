@@ -5,6 +5,10 @@
 	<body>
 		<script>
 			postUploadFile = function() {
+				if($("#file").val() == "") {
+					alert("Please select file to upload.");
+					return;
+				}
 			    $("#status").val("");
 			    createGroupTables = $("#createGroupTables").is(":checked");
 			    if(createGroupTables == "true") {
