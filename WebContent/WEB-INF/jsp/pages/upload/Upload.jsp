@@ -36,7 +36,7 @@
 							</tr>
 							<tr>
 								<td>
-									<input type="file" id="file" name="file" style="width: 600px"/>
+									<input type="file" id="file" name="file" style="width: 800px"/>
 								</td>
 							</tr>
 							<tr>
@@ -53,7 +53,7 @@
 							</tr>
 							<tr>
 								<td>
-									<textarea wrap="off" readonly id="status" name="status" style="height: 200px;width: 100%;color: gray;">Select file and press submit...</textarea>
+									<textarea wrap="off" readonly id="status" name="status" style="height: 330px;width: 100%;color: gray;">Select file and press submit...</textarea>
 								</td>
 							</tr>
 							<tr>
