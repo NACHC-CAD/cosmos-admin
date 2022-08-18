@@ -53,6 +53,24 @@
 				$("#org").prop("disabled", false);
 			}
 
+			function enableDeleteLotButtons() {
+				$("#createGroupTablesForDelete").prop("disabled", false);
+				$("#next1").prop("disabled", false);
+				$("#next2").prop("disabled", false);
+				$("#back1").prop("disabled", false);
+				$("#back2").prop("disabled", false);
+				$("#deleteTheseFiles").prop("disabled", false);
+			}
+			
+			function disableDeleteLotButtons() {
+				$("#next1").prop("disabled", true);
+				$("#next2").prop("disabled", true);
+				$("#back1").prop("disabled", true);
+				$("#back2").prop("disabled", true);
+				$("#createGroupTablesForDelete").prop("disabled", true);
+				$("#deleteTheseFiles").prop("disabled", true);
+			}
+			
 			deleteLot = function() {
 				// set the variable values
 				project = $("#project").children("option:selected").val();
@@ -75,7 +93,7 @@
 			    url = "";
 			    url = url + "${home}/DeleteLot";
 			    url = url + "?createGroupTablesDeleteFormInput=" + createGroupTables;
-			    YES.postFormAndShowStatus("deleteForm", "deleteStatusLog", url);
+			    YES.postFormAndShowStatus("deleteForm", "deleteStatusLog", url, enableDeleteLotButtons, enableDeleteLotButtons, disableDeleteLotButtons);
 			}
 			
 			$("#deleteStatusLog").change(
@@ -109,7 +127,7 @@
 	</span>
 	<br/>
 	<br/>
-	<button onclick="javascript:getLots();">Next</button>
+	<button id="next1" onclick="javascript:getLots();">Next</button>
 	<br/>
 	<br/>
 	<div id="lotPickList"></div>

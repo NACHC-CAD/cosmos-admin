@@ -29,9 +29,9 @@
 		</c:forEach>
 	</table>
 	<br/><br/>
-	<button onclick="javascript:backToSelectLot();">Back</button>
+	<button id="back2" onclick="javascript:backToSelectLot();">Back</button>
 	&nbsp;
-	<button onclick="javascript:deleteLot();">Delete These Files</button>
+	<button id="deleteTheseFiles" onclick="javascript:deleteLot();">Delete These Files</button>
 	<br/><br/>
 	<input id="createGroupTablesForDelete" type="checkbox" checked />
 	<label for="createGroupTablesForDelete">&nbsp;Create&nbsp;Group&nbsp;Tables</label>
