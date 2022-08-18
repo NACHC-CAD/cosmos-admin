@@ -110,6 +110,7 @@ public class UploadAction extends HttpServlet {
 	private void writeZipFileToDisc(HttpServletRequest req, HttpServletResponse resp, Listener lis) throws ServletException, IOException {
 		CosmosConnections conns = null;
 		try {
+			// get the connections
 			log(lis, "------");
 			log(lis, "Getting connections");
 			conns = new CosmosConnections(mysqlDs, databricksDs);

@@ -221,7 +221,7 @@ YES.showErrorMessage = function() {
 	YES.unblock();
 };
 
-YES.getAndShowStatus = function(formId, listenerId, url) {
+YES.getAndShowStatus = function(formId, listenerId, url, successFunction, errorFunction, waitingFunction) {
 	// based on https://gist.github.com/sohelrana820/63f029d3aa12936afbc50eb785c496c0
 	var form = $("#" + formId)[0];
 	var data = new FormData(form);
@@ -233,6 +233,8 @@ YES.getAndShowStatus = function(formId, listenerId, url) {
         processData: false,
         contentType: false,
         cache: false,
+		success: successFunction,
+		error: errorFunction,
         xhrFields: {
             // Getting on progress streaming response
             onprogress: function(e) {
@@ -243,10 +245,10 @@ YES.getAndShowStatus = function(formId, listenerId, url) {
             }
         }
     });
-
+	waitingFunction();
 };
 
-YES.postFormAndShowStatus = function(formId, listenerId, url) {
+YES.postFormAndShowStatus = function(formId, listenerId, url, successFunction, errorFunction, waitingFunction) {
 	// based on https://gist.github.com/sohelrana820/63f029d3aa12936afbc50eb785c496c0
 	var form = $("#" + formId);
 	var data = form.serialize();
@@ -254,6 +256,8 @@ YES.postFormAndShowStatus = function(formId, listenerId, url) {
         type: "POST",
         url: url,
         data: data,
+		success: successFunction,
+		error: errorFunction,
         xhrFields: {
             // Getting on progress streaming response
             onprogress: function(e) {
@@ -264,7 +268,7 @@ YES.postFormAndShowStatus = function(formId, listenerId, url) {
             }
         }
     });
-
+	waitingFunction();
 };
 
 $( function() {

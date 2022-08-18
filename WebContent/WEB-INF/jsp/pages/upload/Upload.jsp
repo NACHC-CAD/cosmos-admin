@@ -4,22 +4,37 @@
 	</head>
 	<body>
 		<script>
+		
+			disableButtons = function() {
+				$("#uploadButton").prop("disabled", true);
+				$("#file").prop("disabled", true);
+				$("#createGroupTablesButton").prop("disabled", true);
+			}
+		
+			enableButtons = function() {
+				$("#uploadButton").prop("disabled", false);
+				$("#file").prop("disabled", false);
+				$("#createGroupTablesButton").prop("disabled", false);
+			}
+			
 			postUploadFile = function() {
 				if($("#file").val() == "") {
 					alert("Please select file to upload.");
-					return;
+					enableButtons();
+				} else {
+				    $("#status").val("");
+				    createGroupTables = $("#createGroupTables").is(":checked");
+				    if(createGroupTables == "true") {
+				    	$("createGroupTablesFormInput").val("true");
+				    } else {
+				    	$("createGroupTablesFormInput").val("false");
+				    }
+				    url = "";
+				    url = url + "${home}/Upload";
+				    url = url + "?createGroupTables=" + createGroupTables;
+					YES.getAndShowStatus("uploadForm", "status", url, enableButtons, enableButtons, disableButtons);
+					disableButtons();
 				}
-			    $("#status").val("");
-			    createGroupTables = $("#createGroupTables").is(":checked");
-			    if(createGroupTables == "true") {
-			    	$("createGroupTablesFormInput").val("true");
-			    } else {
-			    	$("createGroupTablesFormInput").val("false");
-			    }
-			    url = "";
-			    url = url + "${home}/Upload";
-			    url = url + "?createGroupTables=" + createGroupTables;
-				YES.getAndShowStatus("uploadForm", "status", url);
 			}
 		</script>
 		<div align="center">
@@ -58,7 +73,7 @@
 							</tr>
 							<tr>
 								<td>
-									<input type="button" value="Upload file to Cosmos" onclick="javascript:postUploadFile()" />
+									<input id="uploadButton" type="button" value="Upload file to Cosmos" onclick="postUploadFile();" />
 								</td>
 							</tr>
 						</table>

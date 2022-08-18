@@ -23,7 +23,7 @@
 		    url = "";
 		    url = url + "${home}/CreateProjectGroupTables";
 		    url = url + "?project=" + project;
-		    YES.postFormAndShowStatus("createGroupTablesForm", "status", url);
+		    YES.postFormAndShowStatus("createGroupTablesForm", "status", url, enableButtons, enableButtons, disableButtons);
 		}
 	
 		$("#status").change(
