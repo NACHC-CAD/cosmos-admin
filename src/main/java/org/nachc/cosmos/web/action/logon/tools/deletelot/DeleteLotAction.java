@@ -72,7 +72,7 @@ public class DeleteLotAction extends HttpServlet {
 			log(lis, "Group Tables: " + createGroupTables);
 			// do the delete
 			log(lis, "Doing the delete...");
-			if("true".equalsIgnoreCase(createGroupTables)) {
+			if ("true".equalsIgnoreCase(createGroupTables)) {
 				org.nachc.cad.cosmos.action.delete.DeleteLotAction.deleteLot(project, orgCode, dataLot, conns, lis);
 			} else {
 				org.nachc.cad.cosmos.action.delete.DeleteLotAction.deleteLotFiles(project, orgCode, dataLot, conns);
@@ -98,9 +98,11 @@ public class DeleteLotAction extends HttpServlet {
 				throw new RuntimeException(thr);
 			}
 		} finally {
-			if(conns != null) {
-				CosmosConnections.close(conns);
-			}
+			log(lis, "Open connections: " + CosmosConnections.getOpenCount());
+			log(lis, "Closing connections...");
+			CosmosConnections.close(conns);
+			log(lis, "Done closing connections.");
+			log(lis, "Open connections: " + CosmosConnections.getOpenCount());
 		}
 	}
 

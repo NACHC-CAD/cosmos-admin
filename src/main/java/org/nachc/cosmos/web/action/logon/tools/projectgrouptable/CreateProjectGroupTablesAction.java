@@ -62,9 +62,11 @@ public class CreateProjectGroupTablesAction extends HttpServlet {
 			log(lis, "ERROR MESSAGE: ");
 			log(lis, thr.getMessage());
 		} finally {
-			if (conns != null) {
-				CosmosConnections.close(conns);
-			}
+			log(lis, "Open connections: " + CosmosConnections.getOpenCount());
+			log(lis, "Closing connections...");
+			CosmosConnections.close(conns);
+			log(lis, "Done closing connections.");
+			log(lis, "Open connections: " + CosmosConnections.getOpenCount());
 		}
 		log(lis, "");
 		log(lis, "Done.");

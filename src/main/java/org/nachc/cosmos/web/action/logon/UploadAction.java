@@ -57,16 +57,19 @@ public class UploadAction extends HttpServlet {
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		OutputStream out = resp.getOutputStream();
 		Listener lis = new OutputStreamListener(out);
+		log(lis, "Processing request...");
 		CosmosConnections conns = null;
 		try {
+			log(lis, "Getting database connections...");
 			conns = CosmosConnections.open(mysqlDs, databricksDs);
+			log(lis, "Got database connections.");
 			processRequest(req, resp, conns, lis);
 		} finally {
+			log(lis, "Open connections: " + CosmosConnections.getOpenCount());
 			log(lis, "Closing connections...");
-			if (conns != null) {
-				CosmosConnections.close(conns);
-			}
+			CosmosConnections.close(conns);
 			log(lis, "Done closing connections.");
+			log(lis, "Open connections: " + CosmosConnections.getOpenCount());
 		}
 
 	}
@@ -86,8 +89,7 @@ public class UploadAction extends HttpServlet {
 				log(lis, "\n\nDone.");
 			} catch (ValidationException exp) {
 				log(lis, "\n! ! ! An Error occured processing this file (stactrace is above for reference) ! ! !");
-				log(lis, "ERROR MESSAGE: ");
-				log(lis, exp.getMessage());
+				log(lis, "ERROR MESSAGE: " + exp.getMessage());
 			} catch (Throwable thr) {
 				PrintStream ps = new PrintStream(lis.getOut());
 				thr.printStackTrace(ps);
@@ -165,7 +167,6 @@ public class UploadAction extends HttpServlet {
 			log(lis, "UPLOAD FAILED:");
 			log(lis, rtn.getValidationMessage());
 			log(lis, "-----------------------");
-			log(lis, "");
 			throw new ValidationException("Validation failed, see specific message above.");
 		}
 		conns.commit();
