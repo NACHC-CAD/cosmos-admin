@@ -13,6 +13,11 @@ public class OutputStreamListener implements Listener {
 	}
 	
 	@Override
+	public OutputStream getOut() {
+		return this.getOut();
+	}
+	
+	@Override
 	public void notify(Object obj) {
 		try {
 			String str = obj + "\n";

@@ -48,7 +48,7 @@ public class CreateProjectGroupTablesAction extends HttpServlet {
 		try {
 			log(lis, "------");
 			log(lis, "Getting connections");
-			conns = new CosmosConnections(mysqlDs, databricksDs);
+			conns = CosmosConnections.open(mysqlDs, databricksDs);
 			log(lis, "Got connections");
 			log(lis, "------");
 			log(lis, "Creating group tables for project: " + project);

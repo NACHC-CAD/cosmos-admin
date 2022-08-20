@@ -55,7 +55,7 @@ public class DeleteLotAction extends HttpServlet {
 		try {
 			// get the database connection
 			log(lis, "Getting database connection...");
-			conns = new CosmosConnections(mysqlDs, databricksDs);
+			conns = CosmosConnections.open(mysqlDs, databricksDs);
 			log(lis, "Got database connection.");
 			// do the delete
 			log(lis, "Doing delete...");

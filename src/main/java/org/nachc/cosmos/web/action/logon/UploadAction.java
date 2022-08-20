@@ -46,33 +46,50 @@ public class UploadAction extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		doPost(req, resp);
+		processRequest(req, resp);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		processRequest(req, resp);
+	}
+
+	private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		OutputStream out = resp.getOutputStream();
+		Listener lis = new OutputStreamListener(out);
+		CosmosConnections conns = null;
+		try {
+			conns = CosmosConnections.open(mysqlDs, databricksDs);
+			processRequest(req, resp, conns, lis);
+		} finally {
+			log(lis, "Closing connections...");
+			if (conns != null) {
+				CosmosConnections.close(conns);
+			}
+			log(lis, "Done closing connections.");
+		}
+
+	}
+
+	private void processRequest(HttpServletRequest req, HttpServletResponse resp, CosmosConnections conns, Listener lis) throws ServletException, IOException {
 		log.debug("----------");
 		log.debug("Doing post");
 		resp.setContentType("application/text");
-		OutputStream out = resp.getOutputStream();
-		Listener lis = new OutputStreamListener(out);
 		log(lis, "Writing file to COSMOS...");
-		out.flush();
 		log(lis, "Doing validation of request...");
 		boolean isValid = validateRequest(req, resp, lis);
-		if(isValid) {
+		if (isValid) {
 			try {
 				log(lis, "Writing zip files to disc...");
-				writeZipFileToDisc(req, resp, lis);
+				writeZipFileToDisc(req, resp, conns, lis);
 				log(lis, "Done writing zip files to disc.");
 				log(lis, "\n\nDone.");
-				out.flush();
 			} catch (ValidationException exp) {
 				log(lis, "\n! ! ! An Error occured processing this file (stactrace is above for reference) ! ! !");
 				log(lis, "ERROR MESSAGE: ");
 				log(lis, exp.getMessage());
 			} catch (Throwable thr) {
-				PrintStream ps = new PrintStream(out);
+				PrintStream ps = new PrintStream(lis.getOut());
 				thr.printStackTrace(ps);
 				thr.printStackTrace();
 				log(lis, "\n\n! ! ! An Error occured processing this file (stactrace is above for reference) ! ! !");
@@ -84,14 +101,14 @@ public class UploadAction extends HttpServlet {
 			log(lis, "The selected file could not be processed.");
 		}
 	}
-	
+
 	private boolean validateRequest(HttpServletRequest req, HttpServletResponse resp, Listener lis) {
 		log(lis, "Validating request...");
 		try {
 			Part filePart = req.getPart("file");
 			InputStream in = filePart.getInputStream();
 			String fileName = filePart.getSubmittedFileName();
-			if(in == null || StringUtil.isEmpty(fileName)) {
+			if (in == null || StringUtil.isEmpty(fileName)) {
 				log(lis, "Could not read input file (file was null)");
 				log(lis, "Validation failed");
 				return false;
@@ -101,86 +118,76 @@ public class UploadAction extends HttpServlet {
 			}
 			log(lis, "Validation complete.");
 			return true;
-		} catch(Exception exp) {
+		} catch (Exception exp) {
 			log(lis, "Could not read input file.");
 			return false;
 		}
 	}
 
-	private void writeZipFileToDisc(HttpServletRequest req, HttpServletResponse resp, Listener lis) throws ServletException, IOException {
-		CosmosConnections conns = null;
-		try {
-			// get the connections
-			log(lis, "------");
-			log(lis, "Getting connections");
-			conns = new CosmosConnections(mysqlDs, databricksDs);
-			log(lis, "Got connections");
-			log(lis, "------");
-			log(lis, "Getting file");
-			Part filePart = req.getPart("file");
-			InputStream in = filePart.getInputStream();
-			String fileName = filePart.getSubmittedFileName();
-			log(lis, "Got file: " + fileName);
-			File uploadDir = getUploadFileDir(fileName, lis);
-			File file = new File(uploadDir, fileName);
-			log(lis, "Wrting file");
-			FileUtil.write(in, file);
-			log(lis, "Done writing file");
-			log(lis, "Zipfile size on disc: " + file.length());
-			log(lis, "Unzipping");
-			ZipUtil.unzip(file, file.getParentFile());
-			File srcDir = getUnzippedRootFile(file);
-			log(lis, "Done unzipping");
-			log(lis, "Source Dir: " + FileUtil.getCanonicalPath(srcDir));
-			log(lis, "Done writing file to server");
-			log(lis, "------");
-			String createGroupTables = req.getParameter("createGroupTables");
-			log(lis, "Uploading data to Databricks");
-			RawDataFileUploadParams rtn = null;
-			if("true".equalsIgnoreCase(createGroupTables)) {
-				// TODO: FIX UID HERE (should not be "greshje")
-				rtn = UploadDir.uploadDir(srcDir, "greshje", conns, lis, true);
-			} else {
-				log(lis, "SKIPPING CREATE GROUP TABLES...");
-				log(lis, "You will need to create the group tables for this project to propegate the data.");
-				rtn = UploadDir.uploadDirFilesOnly(srcDir, "greshje", conns, lis);
-			}
-			if(rtn.isValidationSuccess() == false) {
-				log(lis, "");
-				log(lis, "-----------------------");
-				log(lis, "UPLOAD FAILED:");
-				log(lis, rtn.getValidationMessage());
-				log(lis, "-----------------------");
-				log(lis, "");
-				throw new ValidationException("Validation failed, see specific message above.");
-			}
-			conns.commit();
-		} finally {
-			log(lis, "Closing connections...");
-			if(conns != null) {
-				conns.close();
-			}
-			log(lis, "Done closing connections.");
+	private void writeZipFileToDisc(HttpServletRequest req, HttpServletResponse resp, CosmosConnections conns, Listener lis) throws ServletException, IOException {
+		// get the connections
+		log(lis, "------");
+		log(lis, "Getting connections");
+		log(lis, "Got connections");
+		log(lis, "------");
+		log(lis, "Getting file");
+		Part filePart = req.getPart("file");
+		InputStream in = filePart.getInputStream();
+		String fileName = filePart.getSubmittedFileName();
+		log(lis, "Got file: " + fileName);
+		File uploadDir = getUploadFileDir(fileName, lis);
+		File file = new File(uploadDir, fileName);
+		log(lis, "Wrting file");
+		FileUtil.write(in, file);
+		log(lis, "Done writing file");
+		log(lis, "Zipfile size on disc: " + file.length());
+		log(lis, "Unzipping");
+		ZipUtil.unzip(file, file.getParentFile());
+		File srcDir = getUnzippedRootFile(file);
+		log(lis, "Done unzipping");
+		log(lis, "Source Dir: " + FileUtil.getCanonicalPath(srcDir));
+		log(lis, "Done writing file to server");
+		log(lis, "------");
+		String createGroupTables = req.getParameter("createGroupTables");
+		log(lis, "Uploading data to Databricks");
+		RawDataFileUploadParams rtn = null;
+		if ("true".equalsIgnoreCase(createGroupTables)) {
+			// TODO: FIX UID HERE (should not be "greshje")
+			rtn = UploadDir.uploadDir(srcDir, "greshje", conns, lis, true);
+		} else {
+			log(lis, "SKIPPING CREATE GROUP TABLES...");
+			log(lis, "You will need to create the group tables for this project to propegate the data.");
+			rtn = UploadDir.uploadDirFilesOnly(srcDir, "greshje", conns, lis);
 		}
+		if (rtn.isValidationSuccess() == false) {
+			log(lis, "");
+			log(lis, "-----------------------");
+			log(lis, "UPLOAD FAILED:");
+			log(lis, rtn.getValidationMessage());
+			log(lis, "-----------------------");
+			log(lis, "");
+			throw new ValidationException("Validation failed, see specific message above.");
+		}
+		conns.commit();
 	}
-	
+
 	private File getUnzippedRootFile(File srcFile) {
 		File dir = srcFile.getParentFile();
 		List<File> files = FileUtil.list(dir);
-		for(File file : files) {
-			if(file.isDirectory()) {
+		for (File file : files) {
+			if (file.isDirectory()) {
 				return file;
 			}
 		}
 		return null;
 	}
-	
+
 	private File getUploadFileDir(String fileName, Listener lis) {
 		String serverFilesRoot = MySqlParams.getServerFileRoot();
 		File rtn = null;
 		int cnt = -1;
 		boolean fileExists = true;
-		while(fileExists == true) {
+		while (fileExists == true) {
 			cnt++;
 			String cntString = StringUtils.leftPad(cnt + "", 3, "0");
 			String dirName = "";
@@ -196,12 +203,12 @@ public class UploadAction extends HttpServlet {
 		log(lis, "Dir created: " + success);
 		return rtn;
 	}
-	
+
 	private void log(Listener lis, String str) {
 		log.info(str);
-		if(lis != null) {
+		if (lis != null) {
 			lis.notify(str);
 		}
 	}
-	
+
 }
