@@ -99,7 +99,7 @@ public class DeleteLotAction extends HttpServlet {
 			}
 		} finally {
 			if(conns != null) {
-				conns.close();
+				CosmosConnections.close(conns);
 			}
 		}
 	}

@@ -63,7 +63,7 @@ public class CreateProjectGroupTablesAction extends HttpServlet {
 			log(lis, thr.getMessage());
 		} finally {
 			if (conns != null) {
-				conns.close();
+				CosmosConnections.close(conns);
 			}
 		}
 		log(lis, "");
