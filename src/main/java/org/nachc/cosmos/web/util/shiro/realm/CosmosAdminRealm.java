@@ -18,6 +18,7 @@ import org.apache.shiro.realm.SimpleAccountRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.PersonDvo;
+import org.nachc.cad.cosmos.util.connection.CosmosConnections;
 import org.nachc.cosmos.web.util.params.MySqlParams;
 import org.yaorma.dao.Dao;
 import org.yaorma.database.Database;
@@ -35,6 +36,7 @@ public class CosmosAdminRealm extends SimpleAccountRealm {
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+
 		log.info("* * * DOING CUSTOM AUTHN * * *");
 		UsernamePasswordToken upToken = (UsernamePasswordToken) token;
 		Subject subject = SecurityUtils.getSubject();
@@ -83,39 +85,44 @@ public class CosmosAdminRealm extends SimpleAccountRealm {
 	}
 
 	private boolean authenticate(String uid, String pwd) {
-		String key = MySqlParams.getKey();
-		log.info("looking for: " + uid);
-		Connection conn = this.getConnection();
-		PersonDvo dvo = Dao.find(new PersonDvo(), "username", uid, conn);
-		if (dvo == null) {
-			log.info("Did not find: " + uid);
-			return false;
+		CosmosConnections conns = null;
+		try {
+			String key = MySqlParams.getKey();
+			log.info("looking for: " + uid);
+			conns = this.getConnection();
+			PersonDvo dvo = Dao.find(new PersonDvo(), "username", uid, conns.getMySqlConnection());
+			if (dvo == null) {
+				log.info("Did not find: " + uid);
+				return false;
+			}
+			log.info("Authenticating password for: " + uid);
+			String salt = dvo.getSalt();
+			PasswordUtil util = new PasswordUtil(salt, key);
+			String expected = dvo.getPassword();
+			boolean rtn = util.authenticate(pwd, expected);
+			log.info("Authenicated (" + uid + "): " + rtn);
+			return rtn;
+		} finally {
+			log.info("Open connections: " + CosmosConnections.getOpenCount());
+			log.info("Closing connections...");
+			CosmosConnections.close(conns);
+			log.info("Done closing connections.");
+			log.info("Open connections: " + CosmosConnections.getOpenCount());
 		}
-		log.info("Authenticating password for: " + uid);
-		String salt = dvo.getSalt();
-		PasswordUtil util = new PasswordUtil(salt, key);
-		String expected = dvo.getPassword();
-		boolean rtn = util.authenticate(pwd, expected);
-		log.info("Authenicated (" + uid + "): " + rtn);
-		return rtn;
 	}
 
-	private Connection getConnection() {
+	private CosmosConnections getConnection() {
 		DataSource dataSource = null;
-		Connection connection = null;
+		CosmosConnections conns = null;
 		try {
 			InitialContext initContext;
 			initContext = new InitialContext();
 			dataSource = (DataSource) initContext.lookup("java:/MySqlDS");
-			try {
-				connection = dataSource.getConnection();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			conns = CosmosConnections.open(dataSource, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return connection;
+		return conns;
 	}
 
 }

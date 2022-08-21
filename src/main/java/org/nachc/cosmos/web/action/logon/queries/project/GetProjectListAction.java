@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.ProjectDvo;
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.RawTableFileDvo;
+import org.nachc.cad.cosmos.util.connection.CosmosConnections;
 import org.nachc.cosmos.web.util.query.lot.GetLots;
 import org.nachc.cosmos.web.util.query.project.GetAllProjects;
 
@@ -27,13 +28,13 @@ public class GetProjectListAction extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Connection conn = null;
+		CosmosConnections conns = null;
 		try {
-			conn = ds.getConnection();
+			conns = CosmosConnections.open(ds, null);
 			String forwardTo = req.getParameter("forwardTo");
 			log.info("Getting projects...");
 			log.info("Forward: " + forwardTo);
-			List<ProjectDvo> projectList = GetAllProjects.exec(conn);
+			List<ProjectDvo> projectList = GetAllProjects.exec(conns.getMySqlConnection());
 			req.setAttribute("projectList", projectList);
 			// forward request
 			RequestDispatcher disp = req.getRequestDispatcher(forwardTo);
@@ -41,6 +42,9 @@ public class GetProjectListAction extends HttpServlet {
 			log.info("Done with getDataLotsForOrgProject.");			
 		} catch(Throwable thr) {
 			throw new RuntimeException(thr);
+		}
+		finally {
+			CosmosConnections.close(conns);
 		}
 	}
 

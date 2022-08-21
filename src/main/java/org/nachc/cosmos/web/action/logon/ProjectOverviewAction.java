@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.ProjectDvo;
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.RawTableDetailDvo;
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.RawTableGroupDvo;
+import org.nachc.cad.cosmos.util.connection.CosmosConnections;
 import org.nachc.cosmos.web.model.project.details.Project;
 import org.nachc.cosmos.web.model.project.details.ProjectOverview;
 import org.nachc.cosmos.web.model.project.details.RawTableDetailList;
@@ -31,42 +32,44 @@ public class ProjectOverviewAction extends HttpServlet {
 	private static final String FORWARD = "/WEB-INF/jsp/pages/project/project.jsp";
 	
 	@Resource(lookup = "java:/MySqlDS")
-	private DataSource ds;
+	private DataSource mysqlDs;
+
+	@Resource(lookup = "java:/DatabricksDS")
+	private DataSource databricksDs;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Connection conn = null;
+		CosmosConnections conns = null;
 		try {
 			log.info("ProjectOverviewAction...");
 			String guid = req.getParameter("guid");
 			log.info("guid: " + guid);
 			// get the connection
-			log.info("Datasource: " + ds);
-			conn = ds.getConnection();
-			log.info("Got connection: " + conn);
+			conns = CosmosConnections.open(mysqlDs, databricksDs);
+			log.info("Got connection: " + conns);
 			// get the project
-			ProjectDvo projectDvo = Project.get(guid, conn);
+			ProjectDvo projectDvo = Project.get(guid, conns.getMySqlConnection());
 			req.setAttribute("projectDvo", projectDvo);
 			// get the project overview
-			ProjectOverviewProxy projectOverviewProxy = ProjectOverview.get(projectDvo.getCode(), conn);
+			ProjectOverviewProxy projectOverviewProxy = ProjectOverview.get(projectDvo.getCode(), conns.getMySqlConnection());
 			req.setAttribute("projectOverviewProxy", projectOverviewProxy);
 			// get the raw data tables list
-			List<RawTableGroupDvo> rawTableGroupList = RawTableList.get(projectDvo.getCode(), conn);
+			List<RawTableGroupDvo> rawTableGroupList = RawTableList.get(projectDvo.getCode(), conns.getMySqlConnection());
 			req.setAttribute("rawTableGroupList", rawTableGroupList);
 			// get the raw data file by org list
-			List<RawTableDetailDvo> rawTableDetailListByOrg = RawTableDetailList.getByOrg(projectDvo.getCode(), conn);
+			List<RawTableDetailDvo> rawTableDetailListByOrg = RawTableDetailList.getByOrg(projectDvo.getCode(), conns.getMySqlConnection());
 			req.setAttribute("rawTableDetailListByOrg", rawTableDetailListByOrg);
 			// get the raw data file by table list
-			List<RawTableDetailDvo> rawTableDetailListByTable = RawTableDetailList.getByTable(projectDvo.getCode(), conn);
+			List<RawTableDetailDvo> rawTableDetailListByTable = RawTableDetailList.getByTable(projectDvo.getCode(), conns.getMySqlConnection());
 			req.setAttribute("rawTableDetailListByTable", rawTableDetailListByTable);
 			// forward request
 			RequestDispatcher disp = req.getRequestDispatcher(FORWARD);
 			disp.forward(req, resp);
 			log.info("Done with start.");
-		} catch (SQLException exp) {
+		} catch (Exception exp) {
 			throw new RuntimeException(exp);
 		} finally {
-			Database.close(conn);
+			CosmosConnections.close(conns);
 		}
 	}
 

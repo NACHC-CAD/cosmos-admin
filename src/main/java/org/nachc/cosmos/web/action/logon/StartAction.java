@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.ProjectDvo;
+import org.nachc.cad.cosmos.util.connection.CosmosConnections;
 import org.nachc.cosmos.web.model.project.list.ProjectList;
 import org.yaorma.database.Database;
 
@@ -29,25 +30,25 @@ public class StartAction extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Connection conn = null;
+		CosmosConnections conns = null;
 		try {
 			log.info("Doing Start...");
 			req.setAttribute("msg", "Logon Successful");
 			// get the connection
 			log.info("Datasource: " + ds);
-			conn = ds.getConnection();
-			log.info("Got connection: " + conn);
+			conns = CosmosConnections.open(ds, null);
+			log.info("Got connection: " + conns.getMySqlConnection());
 			// get the projects
-			List<ProjectDvo> projectList = ProjectList.getProjects(conn);
+			List<ProjectDvo> projectList = ProjectList.getProjects(conns.getMySqlConnection());
 			req.setAttribute("projectList", projectList);
 			// forward request
 			RequestDispatcher disp = req.getRequestDispatcher(FORWARD);
 			disp.forward(req, resp);
 			log.info("Done with start.");
-		} catch (SQLException exp) {
+		} catch (Exception exp) {
 			throw new RuntimeException(exp);
 		} finally {
-			Database.close(conn);
+			CosmosConnections.close(conns);
 		}
 	}
 
