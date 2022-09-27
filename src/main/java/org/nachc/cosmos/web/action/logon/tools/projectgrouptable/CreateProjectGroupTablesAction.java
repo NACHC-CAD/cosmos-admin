@@ -52,7 +52,7 @@ public class CreateProjectGroupTablesAction extends HttpServlet {
 			log(lis, "Got connections");
 			log(lis, "------");
 			log(lis, "Creating group tables for project: " + project);
-			UploadDir.uploadCreateGroupTablesOnly(project, conns, lis);
+			UploadDir.uploadCreateGroupTablesOnly(project, conns, lis, true);
 			log(lis, "Done creating Databricks tables.");
 		} catch (Throwable thr) {
 			PrintStream ps = new PrintStream(out);
