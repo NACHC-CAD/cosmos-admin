@@ -1,0 +1,6 @@
+Add the following to the -vm args for the run configuration
+
+--add-opens=java.base/java.nio=ALL-UNNAMED
+
+
+
