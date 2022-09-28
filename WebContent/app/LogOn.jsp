@@ -40,7 +40,14 @@
 									<td>
 									</td>
 									<td align="center">
-										<button width="100%" style="width:100%">Submit</button>
+										<button id="submitButton" width="100%" style="width:100%">Submit</button>
+										<script>
+											$("#submitButton").click( 
+												function() {
+													$("#loginMessage").html("Sending request...");
+												} 
+											)
+										</script>
 									</td>
 								</tr>
 								<tr>
@@ -51,7 +58,13 @@
 					</tr>
 				</table>
 				<br/>
-				<div style="color:red">${msg}</div>
+				<div id="loginMessage">
+					<div style="color:red">
+						<c:if test="${shiroLoginFailure != null}">
+						    Username or password incorrect
+						</c:if>
+					</div>
+				</div>
 			</form>
 			<br/><br/><br/><br/>
 		</div>

@@ -1,9 +1,5 @@
 package org.nachc.cosmos.web.util.shiro.realm;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.annotation.Resource;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
@@ -21,7 +17,6 @@ import org.nachc.cad.cosmos.dvo.mysql.cosmos.PersonDvo;
 import org.nachc.cad.cosmos.util.connection.CosmosConnections;
 import org.nachc.cosmos.web.util.params.MySqlParams;
 import org.yaorma.dao.Dao;
-import org.yaorma.database.Database;
 
 import com.nach.core.util.web.security.PasswordUtil;
 
