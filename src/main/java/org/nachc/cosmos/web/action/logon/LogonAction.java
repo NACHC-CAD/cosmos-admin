@@ -12,11 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.nachc.cad.cosmos.action.confirm.ConfigurationSummary;
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.PersonDvo;
 import org.nachc.cad.cosmos.dvo.mysql.cosmos.ProjectDvo;
 import org.nachc.cad.cosmos.util.connection.CosmosConnections;
 import org.nachc.cosmos.web.model.project.list.ProjectList;
 import org.nachc.cosmos.web.util.params.MySqlParams;
+import org.nachc.cosmos.web.util.version.ApplicationResourcesVersionInfoFactory;
 import org.yaorma.dao.Dao;
 import org.yaorma.database.Database;
 
@@ -52,6 +54,9 @@ public class LogonAction extends HttpServlet {
 			log(null, "Getting database connections...");
 			conns = CosmosConnections.open(mysqlDs, databricksDs);
 			log(null, "Got database connections.");
+			// get the version information for the connections
+			ConfigurationSummary versionInfo = ApplicationResourcesVersionInfoFactory.getConfigurationSummary(conns);
+			req.setAttribute("versionInfo", versionInfo);
 			// get the projects
 			List<ProjectDvo> projectList = ProjectList.getProjects(conns.getMySqlConnection());
 			req.setAttribute("projectList", projectList);
