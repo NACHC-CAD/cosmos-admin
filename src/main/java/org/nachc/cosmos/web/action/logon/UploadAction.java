@@ -59,17 +59,25 @@ public class UploadAction extends HttpServlet {
 		Listener lis = new OutputStreamListener(out);
 		log(lis, "Processing request...");
 		CosmosConnections conns = null;
+		boolean success = false;
 		try {
 			log(lis, "Getting database connections...");
 			conns = CosmosConnections.open(mysqlDs, databricksDs);
 			log(lis, "Got database connections.");
 			processRequest(req, resp, conns, lis);
+			success = true;
 		} finally {
 			log(lis, "Open connections: " + CosmosConnections.getOpenCount());
 			log(lis, "Closing connections...");
 			CosmosConnections.close(conns);
 			log(lis, "Done closing connections.");
 			log(lis, "Open connections: " + CosmosConnections.getOpenCount());
+			if (success == true) {
+				log(lis, "\n\nDone.");
+			} else {
+				log(lis, "\n\nErrors occured, see messages above.");
+				log(lis, "Done (failed).");
+			}
 		}
 
 	}
@@ -81,12 +89,13 @@ public class UploadAction extends HttpServlet {
 		log(lis, "Writing file to COSMOS...");
 		log(lis, "Doing validation of request...");
 		boolean isValid = validateRequest(req, resp, lis);
+		boolean success = false;
 		if (isValid) {
 			try {
 				log(lis, "Writing zip files to disc...");
 				writeZipFileToDisc(req, resp, conns, lis);
 				log(lis, "Done writing zip files to disc.");
-				log(lis, "\n\nDone.");
+				success = true;
 			} catch (ValidationException exp) {
 				log(lis, "\n! ! ! An Error occured processing this file (stactrace is above for reference) ! ! !");
 				log(lis, "ERROR MESSAGE: " + exp.getMessage());

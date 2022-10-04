@@ -77,10 +77,7 @@ public class DeleteLotAction extends HttpServlet {
 			} else {
 				org.nachc.cad.cosmos.action.delete.DeleteLotAction.deleteLotFiles(project, orgCode, dataLot, conns);
 			}
-			log(lis, "Done with delete.");
-			// done
-			log(lis, "");
-			log(lis, "Done.");
+			log(lis, "\nDone with delete.");
 		} catch (Throwable thr) {
 			tryNumber++;
 			if (tryNumber <= NUMBER_OF_TRIES) {
@@ -103,6 +100,8 @@ public class DeleteLotAction extends HttpServlet {
 			CosmosConnections.close(conns);
 			log(lis, "Done closing connections.");
 			log(lis, "Open connections: " + CosmosConnections.getOpenCount());
+			// done
+			log(lis, "\n\nDone.");
 		}
 	}
 
