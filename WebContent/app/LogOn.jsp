@@ -59,6 +59,7 @@
 				</table>
 				<br/>
 				<div id="loginMessage">
+					<p>Version 2023-03-06</p>
 					<div style="color:red">
 						<c:if test="${shiroLoginFailure != null}">
 						    Username or password incorrect
