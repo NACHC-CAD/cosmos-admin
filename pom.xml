@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>org.nachc.cad.tools</groupId>
 			<artifactId>curlew</artifactId>
-			<version>1.1.009</version>
+			<version>1.1.021</version>
 		</dependency>
 
 		<!-- CORE NACHC FRAMEWORK STUFF -->
